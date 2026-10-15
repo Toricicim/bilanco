@@ -1,4 +1,6 @@
+import gzip
 import io
+import zlib
 from dataclasses import replace
 
 import httpx
@@ -106,6 +108,56 @@ def test_403_does_not_disable_tls_or_retry_forever(settings, memory_store):
         with pytest.raises(AcquisitionError, match="403"):
             Acquirer(settings, memory_store, client=client).get(FILING_URL)
     assert len(calls) == 1
+
+
+@pytest.mark.parametrize("encoding,compress", [("gzip", gzip.compress), ("deflate", zlib.compress)])
+def test_compressed_response_is_decoded_once(settings, memory_store, encoding, compress):
+    payload = b"SYNTHETIC document body with original bytes retained after HTTP decoding"
+    compressed = compress(payload)
+
+    def handler(request):
+        return httpx.Response(
+            200,
+            headers={
+                "content-encoding": encoding,
+                "content-length": str(len(compressed)),
+                "content-type": "text/plain",
+            },
+            stream=httpx.ByteStream(compressed),
+        )
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        download = Acquirer(settings, memory_store, client=client).get(FILING_URL)
+    assert download.content == payload
+    assert (settings.data_dir / download.path).read_bytes() == payload
+
+
+def test_compressed_error_response_preserves_http_status(settings, memory_store):
+    def handler(request):
+        return httpx.Response(
+            403,
+            headers={"content-encoding": "gzip"},
+            stream=httpx.ByteStream(gzip.compress(b"SYNTHETIC access denied")),
+        )
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        with pytest.raises(AcquisitionError, match="HTTP 403"):
+            Acquirer(settings, memory_store, client=client).get(FILING_URL)
+
+
+def test_compressed_payload_still_obeys_decoded_size_limit(settings, memory_store):
+    payload = gzip.compress(b"x" * 5000)
+
+    def handler(request):
+        return httpx.Response(
+            200, headers={"content-encoding": "gzip"}, stream=httpx.ByteStream(payload)
+        )
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        with pytest.raises(AcquisitionError, match="boyut"):
+            Acquirer(replace(settings, max_download_bytes=100), memory_store, client=client).get(
+                FILING_URL
+            )
 
 
 def test_archive_fallback_needs_official_publication_proof(settings, memory_store):

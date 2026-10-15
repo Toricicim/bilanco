@@ -171,9 +171,14 @@ class Acquirer:
                     if size > self.settings.max_download_bytes:
                         raise AcquisitionError("Belge boyut sınırını aşıyor.")
                     parts.append(part)
+                # iter_bytes() has already decoded Content-Encoding. Reusing the
+                # wire headers makes Response decode the plain body a second time.
+                decoded_headers = httpx.Headers(response.headers)
+                for name in ("content-encoding", "content-length", "transfer-encoding"):
+                    decoded_headers.pop(name, None)
                 result = httpx.Response(
                     response.status_code,
-                    headers=response.headers,
+                    headers=decoded_headers,
                     content=b"".join(parts),
                     request=response.request,
                 )

@@ -124,3 +124,72 @@ def test_random_prose_years_not_a_table():
         text="We compared 1999 and 1998.\nTotal current assets 200 100",
     )
     assert extract_facts([block], AS_OF)[0] == []
+
+
+def test_legacy_edgar_aligned_tables_keep_numbers_and_evidence(source):
+    # Invented amounts, with the TABLE/CAPTION/S/C format used in old EDGAR files.
+    content = b"""<TABLE>
+CONSOLIDATED BALANCE SHEET
+<CAPTION>
+(In millions, except shares)          1999    1998
+<S>                                   <C>     <C>
+Cash and cash equivalents             $30     $20
+Total current assets                  200     150
+</TABLE>
+<TABLE>
+CONSOLIDATED INCOME STATEMENT
+<CAPTION>
+(In millions, except per share amounts) 1999 1998
+<S>                                     <C>  <C>
+Net income                              $40   $30
+Net income before accounting changes     41    31
+</TABLE>
+<TABLE>
+CONSOLIDATED STATEMENT OF CASH FLOWS
+<CAPTION>
+(In millions)                          1999   1998
+<S>                                    <C>    <C>
+Net Cash Provided by Operating
+ Activities                             $60    $50
+</TABLE>"""
+    blocks, issues = read_document(source, content)
+    facts, rejected = extract_facts(blocks, AS_OF)
+    assert not issues and not rejected
+    lookup = {(f.concept, f.period): f for f in facts}
+    assert lookup[("current_assets", 1999)].value == 200
+    assert lookup[("net_income", 1999)].value == 40
+    cash = lookup[("operating_cash_flow", 1999)]
+    assert cash.value == 60 and cash.scale == 1_000_000
+    assert "Operating\n Activities" in cash.evidence.quote
+    block = next(b for b in blocks if b.id == cash.evidence.block_id)
+    assert cash.evidence.quote in block.text
+
+
+def test_unrecognized_statement_cannot_reuse_previous_table_context(source):
+    content = synthetic_filing().replace(
+        b"NOTES TO CONSOLIDATED FINANCIAL STATEMENTS",
+        b"CONSOLIDATED STATEMENT OF COMPREHENSIVE INCOME\n"
+        b"(In millions of dollars)\n1999 1998\nNet income 900 800\n"
+        b"NOTES TO CONSOLIDATED FINANCIAL STATEMENTS",
+    )
+    blocks, _ = read_document(source, content)
+    facts, rejected = extract_facts(blocks, AS_OF)
+    assert not rejected
+    assert next(f for f in facts if f.concept == "net_income" and f.period == 1999).value == 40
+
+
+def test_units_do_not_turn_arbitrary_prose_into_year_headers(source):
+    content = synthetic_filing().replace(b"1999 1998", b"(In millions) We compared 1999 and 1998.")
+    blocks, _ = read_document(source, content)
+    assert extract_facts(blocks, AS_OF)[0] == []
+
+
+def test_heading_mentioned_in_notes_does_not_reopen_statement(source):
+    content = synthetic_filing() + (
+        b"\nConsolidated Income Statement in the same manner as the hedged item.\n"
+        b"(In millions) 1999 1998\nNet income 900 800\n"
+    )
+    blocks, _ = read_document(source, content)
+    facts, rejected = extract_facts(blocks, AS_OF)
+    assert not rejected
+    assert next(f for f in facts if f.concept == "net_income" and f.period == 1999).value == 40

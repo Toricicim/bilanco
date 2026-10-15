@@ -161,6 +161,9 @@ def main(argv: list[str] | None = None) -> int:
                 progress=lambda stage: print(f"[bilanco] {stage}", file=sys.stderr),
             )
             directory = settings.data_dir / "runs" / result.run_id
+            if result.status == "failed":
+                for reason in result.ai.get("acquisition_notes", [])[:3]:
+                    print(f"[bilanco] {reason}", file=sys.stderr)
             print(
                 json.dumps(
                     {

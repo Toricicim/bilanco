@@ -28,7 +28,7 @@ CONCEPTS = {
 }
 HEADINGS = {
     "balance": r"consolidated balance sheets?",
-    "income": r"consolidated statements? of (?:income|operations|earnings)",
+    "income": r"consolidated (?:statements? of (?:income|operations|earnings)|income statements?)",
     "cashflow": r"consolidated statements? of cash flows?",
 }
 BALANCE_CONCEPTS = set(CONCEPTS) - {"net_income", "operating_cash_flow"}
@@ -78,6 +78,11 @@ def read_document(source: Source, content: bytes) -> tuple[list[Block], list[str
                 node.decompose()
             # Preserve the year/column relationship in HTML tables.
             for table in list(soup.find_all("table")):
+                if not table.find("tr"):
+                    # Legacy EDGAR TABLE/CAPTION/S/C tags enclose aligned text,
+                    # not HTML rows. Keep its original line breaks and spacing.
+                    table.replace_with("\n" + table.get_text() + "\n")
+                    continue
                 rows = []
                 for row in table.find_all("tr"):
                     cells = [
@@ -129,6 +134,29 @@ def parse_amount(raw: str) -> Decimal:
     return result
 
 
+def logical_rows(text: str):
+    """Join only recognized financial labels wrapped before their amounts."""
+    lines = text.splitlines()
+    index = 0
+    while index < len(lines):
+        line = lines[index]
+        if not re.search(r"\d", line):
+            for width in (2, 3):
+                span = lines[index : index + width]
+                if len(span) != width:
+                    continue
+                joined = normalize(" ".join(span)).lower()
+                if any(
+                    re.fullmatch(rf"(?:{pattern})\s+[$(\d\-—][\d\s,$().\-—]*", joined)
+                    for pattern in CONCEPTS.values()
+                ):
+                    line = "\n".join(span)
+                    index += width - 1
+                    break
+        yield line
+        index += 1
+
+
 def extract_facts(blocks: list[Block], as_of: date) -> tuple[list[Fact], list[dict]]:
     facts: list[Fact] = []
     rejected: list[dict] = []
@@ -145,11 +173,13 @@ def extract_facts(blocks: list[Block], as_of: date) -> tuple[list[Fact], list[di
             section, years, header, unit, currency = "", [], None, None, "unknown"
             currency_evidence = None
             source_id = block.source_id
-        for line in block.text.splitlines():
+        for line in logical_rows(block.text):
             clean = normalize(line).replace("’", "'")
             lower = clean.lower()
+            if re.match(r"consolidated (?:statements?|balance|income)", lower):
+                section = ""
             for name, pattern in HEADINGS.items():
-                if re.search(pattern, lower):
+                if re.fullmatch(pattern, lower):
                     section, years, header, unit, currency = name, [], None, None, "unknown"
                     currency_evidence = None
             if re.match(r"(?:\d+\.? )?notes to (?:the )?consolidated", lower):
@@ -171,6 +201,12 @@ def extract_facts(blocks: list[Block], as_of: date) -> tuple[list[Fact], list[di
             if 2 <= len(found_years) <= 3 and len(set(found_years)) == len(found_years):
                 remainder = YEAR.sub("", clean)
                 remainder = re.sub(
+                    r"\(in (?:millions|thousands)(?: of dollars)?(?:, except (?:per share amounts|(?:number of )?shares))?\)",
+                    "",
+                    remainder,
+                    flags=re.I,
+                )
+                remainder = re.sub(
                     r"\b(?:years?|ended|december|dec|as|of|at)\b", "", remainder, flags=re.I
                 )
                 if not re.search(r"[A-Za-z]", remainder):
@@ -190,8 +226,14 @@ def extract_facts(blocks: list[Block], as_of: date) -> tuple[list[Fact], list[di
                 if not match:
                     continue
                 tail = clean[match.end() :].strip(" .:|")
+                if not tail:
+                    continue  # A subsection label or prose continuation is not a numeric row.
                 amounts = AMOUNT.findall(tail)
                 residue = AMOUNT.sub("", tail).strip(" .:|\t")
+                if re.search(r"[A-Za-z]", residue):
+                    # A longer label (e.g. net income before tax) is a different
+                    # concept, not a malformed row for the requested concept.
+                    continue
                 if residue or len(amounts) != len(years):
                     rejected.append(
                         {

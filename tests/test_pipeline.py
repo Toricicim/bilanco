@@ -5,7 +5,7 @@ from conftest import FakeCodex, synthetic_filing
 
 from bilanco.acquisition import Acquirer
 from bilanco.ai import AIError
-from bilanco.models import Candidate, Extraction
+from bilanco.models import Candidate, Discovery, DiscoveryCandidate, Extraction
 from bilanco.pipeline import run_analysis
 
 
@@ -107,3 +107,33 @@ def test_low_current_assets_produces_rule_signal(settings, memory_store):
         )
     assert result.overall == "inceleme_isareti_var"
     assert next(f for f in result.findings if f.id == "current_ratio_1999").status == "signal"
+
+
+def test_accepted_original_skips_duplicate_annual_mirrors(settings, memory_store, acquirer):
+    ai = FakeCodex(
+        discovery=Discovery(
+            sources=[
+                DiscoveryCandidate(
+                    url="https://picker.uchicago.edu/Enron/EnronAnnualReport1999.pdf",
+                    purpose="original_report",
+                ),
+                DiscoveryCandidate(
+                    url="https://www.sec.gov/Archives/example-index.html",
+                    purpose="filing_metadata",
+                ),
+            ]
+        )
+    )
+    requests = []
+    original_get = acquirer.get
+
+    def tracked_get(url):
+        requests.append(url)
+        return original_get(url)
+
+    acquirer.get = tracked_get
+    result = run_analysis(settings, memory_store, acquirer=acquirer, codex=ai)
+    assert result.status == "complete"
+    assert len(requests) == 1 and len(result.sources) == 1
+    assert result.ai["total_packages"] == 1
+    assert ai.calls == 3  # one discovery, one extraction, one finding-order call

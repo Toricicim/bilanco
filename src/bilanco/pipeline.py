@@ -133,6 +133,13 @@ def run_analysis(
                 discovery = ai.discover(missing)
                 seen_urls = {source.url for source in analysis.sources}
                 for candidate in discovery.sources:
+                    if candidate.purpose in {"original_report", "filing_metadata"} and any(
+                        source.provenance in {"sec_original", "archive_copy"}
+                        for source in analysis.sources
+                    ):
+                        # v1 supports one fixed annual filing. A PDF mirror or
+                        # metadata for it adds no disclosure to the accepted original.
+                        continue
                     if candidate.url in seen_urls:
                         continue
                     seen_urls.add(candidate.url)
@@ -206,7 +213,8 @@ def run_analysis(
                 packages = []
                 issues.append(str(exc))
             analysis.ai["total_packages"] = len(packages)
-            for package in packages:
+            for package_index, package in enumerate(packages, 1):
+                progress(f"ai_extraction {package_index}/{len(packages)}")
                 # Do not send obvious prompt injection passages to the model.
                 if any(
                     re.search(
