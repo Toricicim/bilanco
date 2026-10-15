@@ -1,0 +1,158 @@
+{
+  "candidates": [
+    {
+      "kind": "management_counterstatement",
+      "block_id": "111cfea7a85f7d2cc9a07cdf",
+      "quote": "Enron believes, based upon its experience to date and after\nconsidering appropriate reserves that have been established, that\nthe ultimate resolution of pending regulatory matters will not\nhave a material impact on Enron's financial position or results\nof operations.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "59648ad285822d691ec3e409",
+      "quote": "Although no\nassurances can be given, Enron believes, based on its experience\nto date and after considering appropriate reserves that have been\nestablished, that the ultimate resolution of such items,\nindividually or in the aggregate, will not have a material\nadverse impact on Enron's financial position or its results of\noperations.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "59648ad285822d691ec3e409",
+      "quote": "The Enron Defendants deny the Plaintiffs' claims\nand have asserted various affirmative defenses, including the\nstatute of limitations.  The Enron Defendants believe that they\nhave strong legal and factual defenses, and intend to vigorously\ncontest the claims.  Although no assurances can be given, Enron\nbelieves that the ultimate resolution of these matters will not\nhave a material adverse effect on its financial position or\nresults of operations.",
+      "actor": "Enron Defendants",
+      "counterparty": "Plaintiffs"
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "59648ad285822d691ec3e409",
+      "quote": "Although San Juan did not\nprovide service to the building, the National Transportation\nSafety Board (NTSB) concluded that the probable cause of the\nincident was propane leaking from San Juan's distribution system.\nSan Juan and Enron strongly disagree.  The NTSB found no path of\nmigration of propane from San Juan's system to the building and\nno forensic evidence that propane fueled the explosion.",
+      "actor": "San Juan and Enron",
+      "counterparty": "National Transportation\nSafety Board (NTSB)"
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "59648ad285822d691ec3e409",
+      "quote": "Enron, San Juan and its affiliates are vigorously\ncontesting the claims.",
+      "actor": "Enron, San Juan and its affiliates",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "57741113a00a1fcbfb8944f1",
+      "quote": "Enron cannot predict the outcome of these actions.\nAdditionally, due to uncertainties in the regulatory process,\nmanagement cannot predict, with certainty, what ultimate rate-\nmaking action the OPUC will take regarding PGE's recovery of a\nrate of return on its Trojan investment.  Although no assurances\ncan be given, Enron believes that the ultimate resolution of\nthese matters will not have a material adverse effect on its\nfinancial position or results of operations.",
+      "actor": "Enron",
+      "counterparty": "OPUC"
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "57741113a00a1fcbfb8944f1",
+      "quote": "The\nimplementation of the Clean Air Act Amendments is expected to\nresult in increased operating expenses.  These increased\noperating expenses are not expected to have a material impact on\nEnron's financial position or results of operations.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "603acf557e963f0f89bc80be",
+      "quote": "The EPA\nalleges that hazardous substances were released to the\nenvironment during the period in which Enron's predecessor owned\nthe site, and that Enron's predecessor assumed the liabilities of\nthe company that operated the plant.  Enron contests these\nallegations.",
+      "actor": "Enron",
+      "counterparty": "EPA"
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "603acf557e963f0f89bc80be",
+      "quote": "Enron does not expect to incur material expenditures\nin connection with this site.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "603acf557e963f0f89bc80be",
+      "quote": "Although Enron does not\nadmit liability with respect to any costs at this site, it agreed\nto cooperate with the EPA and other potentially responsible\nparties to undertake the work contemplated by the EPA's Order.",
+      "actor": "Enron",
+      "counterparty": "EPA"
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "603acf557e963f0f89bc80be",
+      "quote": "Enron\ndoes not expect to incur material expenditures in connection with\nsoil and groundwater remediation.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "related_party",
+      "block_id": "603acf557e963f0f89bc80be",
+      "quote": "Enron has firm\ntransportation agreements with various joint venture pipelines.\nUnder these agreements, Enron must make specified minimum\npayments each month.  At December 31, 1999, the estimated\naggregate amounts of such required future payments were $65\nmillion, $68 million, $69 million, $70 million and $74 million\nfor 2000 through 2004, respectively, and $515 million for later\nyears.",
+      "actor": "Enron",
+      "counterparty": "various joint venture pipelines"
+    },
+    {
+      "kind": "guarantee",
+      "block_id": "6f920069e660e4374a333558",
+      "quote": "Enron has assigned firm transportation contracts\nwith two of its joint ventures to third parties and guaranteed\nminimum payments under the contracts averaging approximately $36\nmillion annually through 2001 and $3 million in 2002.",
+      "actor": "Enron",
+      "counterparty": "two of its joint ventures"
+    },
+    {
+      "kind": "guarantee",
+      "block_id": "6f920069e660e4374a333558",
+      "quote": "Enron leases property, operating\nfacilities and equipment under various operating leases, certain\nof which contain renewal and purchase options and residual value\nguarantees.  Future commitments related to these items at\nDecember 31, 1999 were $266 million, $88 million, $78 million,\n$53 million and $48 million for 2000 through 2004, respectively,\nand $370 million for later years. Guarantees under the leases\ntotal $715 million at December 31, 1999.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "related_party",
+      "block_id": "6f920069e660e4374a333558",
+      "quote": "In November 1999, a subsidiary of Enron made a contribution\nleaseback of assets in return for a preferred interest in an\nunconsolidated equity affiliate of Enron.  As a result of this\ntransaction, Enron has net future obligations of $5 million each\nyear for 2000 through 2004 and $49 million thereafter.",
+      "actor": "a subsidiary of Enron",
+      "counterparty": "an\nunconsolidated equity affiliate of Enron"
+    },
+    {
+      "kind": "guarantee",
+      "block_id": "6f920069e660e4374a333558",
+      "quote": "Enron guarantees the performance of certain of its\nunconsolidated equity affiliates in connection with letters of\ncredit issued on behalf of those entities.  At December 31, 1999,\na total of $303 million of such guarantees were outstanding,\nincluding $144 million on behalf of EOTT.",
+      "actor": "Enron",
+      "counterparty": "EOTT"
+    },
+    {
+      "kind": "guarantee",
+      "block_id": "6f920069e660e4374a333558",
+      "quote": "In addition, Enron is\na guarantor on certain liabilities of unconsolidated equity\naffiliates and other companies totaling approximately $1,501\nmillion at December 31, 1999, including $427 million related to\nEOTT trade obligations.  The EOTT letters of credit and\nguarantees of trade obligations are secured by the assets of\nEOTT.",
+      "actor": "Enron",
+      "counterparty": "EOTT"
+    },
+    {
+      "kind": "guarantee",
+      "block_id": "6f920069e660e4374a333558",
+      "quote": "Enron has also guaranteed $420 million in lease\nobligations for which it has been indemnified by an \"Investment\nGrade\" company.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "6f920069e660e4374a333558",
+      "quote": "Management does not consider it likely that\nEnron would be required to perform or otherwise incur any losses\nassociated with the above guarantees.",
+      "actor": "Management",
+      "counterparty": "Enron"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "6f920069e660e4374a333558",
+      "quote": "In June 1999, Enron entered into a series of transactions\ninvolving a third party and LJM Cayman, L.P. (LJM).  LJM is a\nprivate investment company which engages in acquiring or\ninvesting in primarily energy-related investments.  A senior\nofficer of Enron is the managing member of LJM's general partner.\nThe effect of the transactions was (i) Enron and the third-party\namended certain forward contracts to purchase shares of Enron\ncommon stock, resulting in Enron having forward contracts to\npurchase Enron common shares at the market price on that day,\n(ii) LJM received 6.8 million shares of Enron common stock\nsubject to certain restrictions and (iii) Enron received a note\nreceivable and certain financial instruments hedging an\ninvestment held by Enron.  Enron recorded the assets received and\nequity issued at estimated fair value.",
+      "actor": "Enron",
+      "counterparty": "LJM Cayman, L.P. (LJM)"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "6f920069e660e4374a333558",
+      "quote": "A senior\nofficer of Enron is the managing member of LJM's general partner.",
+      "actor": "A senior\nofficer of Enron",
+      "counterparty": "LJM"
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "6f920069e660e4374a333558",
+      "quote": "In connection with the\ntransactions, LJM agreed that the Enron officer would have no\npecuniary interest in such Enron common shares and would be\nrestricted from voting on matters related to such shares.  LJM\nrepaid the note receivable in December 1999.",
+      "actor": "LJM",
+      "counterparty": "Enron officer"
+    }
+  ]
+}

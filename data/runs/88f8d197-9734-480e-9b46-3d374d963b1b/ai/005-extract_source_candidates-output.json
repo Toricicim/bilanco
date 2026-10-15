@@ -1,0 +1,32 @@
+{
+  "candidates": [
+    {
+      "kind": "management_counterstatement",
+      "block_id": "d9ded161fa2e4a6032338f25",
+      "quote": "Enron believes that its operations and facilities are in\ngeneral compliance with applicable environmental\nregulations.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "21a7e2a1daeffdca264fe010",
+      "quote": "However, management\ndoes not believe that any costs incurred in connection with\nthese sites (either individually or in the aggregate) will\nhave a material impact on Enron's financial position or\nresults of operations.",
+      "actor": "management",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "5f73033f857007cb3c01090e",
+      "quote": "Approval of\nthe Trojan Decommissioning Plan by the NRC and Oregon Energy\nFacility Siting Counsel has allowed PGE to commence\ndecommissioning activities, which are proceeding\nsatisfactorily and within approved cost estimates.",
+      "actor": "PGE",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "a42b33c92182b2d3779527fc",
+      "quote": "Enron is of the opinion that it has generally\nsatisfactory title to its rights-of-way and lands used in\nthe conduct of its businesses, subject to liens for current\ntaxes, liens incident to operating agreements and minor\nencumbrances, easements and restrictions which do not\nmaterially detract from the value of such property or the\ninterest of Enron therein or the use of such properties in\nsuch businesses.",
+      "actor": "Enron",
+      "counterparty": ""
+    }
+  ]
+}

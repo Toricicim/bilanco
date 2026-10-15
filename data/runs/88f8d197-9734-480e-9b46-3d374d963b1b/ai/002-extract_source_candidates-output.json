@@ -1,0 +1,46 @@
+{
+  "candidates": [
+    {
+      "kind": "related_party",
+      "block_id": "baee897c3ed3fdb3a519b5ec",
+      "quote": "Included in Enron's domestic interstate natural\ngas pipeline operations are Northern Natural Gas Company\n(\"Northern\"), Transwestern Pipeline Company (\"Transwestern\")\nand Florida Gas Transmission Company (\"Florida Gas\")\n(indirectly 50% owned by Enron).",
+      "actor": "Enron",
+      "counterparty": "Florida Gas Transmission Company"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "baee897c3ed3fdb3a519b5ec",
+      "quote": "In addition, Enron\nholds an interest in Northern Border Partners, L.P., which\nowns a 70% interest in the Northern Border Pipeline system.\nAn Enron subsidiary operates the Northern Border Pipeline\nsystem, which transports gas from Western Canada to delivery\npoints in the midwestern United States.",
+      "actor": "Enron",
+      "counterparty": "Northern Border Partners, L.P."
+    },
+    {
+      "kind": "related_party",
+      "block_id": "1c70edb5784d854dfded1010",
+      "quote": "An Enron subsidiary\nowns a 50% interest in Florida Gas by virtue of its 50%\ninterest in Citrus Corp., which owns all of the capital\nstock of Florida Gas.  Another Enron subsidiary operates the\nFlorida Gas pipeline.",
+      "actor": "Enron",
+      "counterparty": "Citrus Corp."
+    },
+    {
+      "kind": "related_party",
+      "block_id": "1c70edb5784d854dfded1010",
+      "quote": "Northern Border\nPartners, L.P., a Delaware limited partnership, owns 70% of\nNorthern Border Pipeline Company, a Texas general\npartnership (\"Northern Border\").  An Enron subsidiary holds\na 12.4% interest in the limited partnership and serves as\noperator of the pipeline.",
+      "actor": "Enron",
+      "counterparty": "Northern Border\nPartners, L.P."
+    },
+    {
+      "kind": "related_party",
+      "block_id": "fe41df3b0ef526938402897e",
+      "quote": "EOTT\nEnergy Corp. (a wholly-owned subsidiary of Enron) serves as\nthe general partner of EOTT.  Enron owns a minority interest\nin EOTT.",
+      "actor": "Enron",
+      "counterparty": "EOTT"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "fe41df3b0ef526938402897e",
+      "quote": "Enron's electric utility operations are conducted\nthrough its wholly-owned subsidiary Portland General\nElectric Company (\"PGE\").",
+      "actor": "Enron",
+      "counterparty": "Portland General\nElectric Company"
+    }
+  ]
+}

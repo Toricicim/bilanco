@@ -1,0 +1,32 @@
+{
+  "candidates": [
+    {
+      "kind": "related_party",
+      "block_id": "cc5dbf4fd28b65542ceb24dd",
+      "quote": "On August 16, 1999, Enron exchanged approximately 62.3 million\nshares (approximately 75%) of the Enron Oil & Gas Company (EOG)\ncommon stock it held for all of the stock of EOGI-India, Inc., a\nsubsidiary of EOG.",
+      "actor": "Enron",
+      "counterparty": "Enron Oil & Gas Company (EOG)"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "cc5dbf4fd28b65542ceb24dd",
+      "quote": "In August 1998, Enron, through a wholly-owned subsidiary,\ncompleted the acquisition of a controlling interest in Elektro\nEletricidade e Servicos S.A. (Elektro), an electricity\ndistributor in Brazil, for approximately $1.3 billion.  Enron's\ninterest in Elektro is held by Jacare Electrical Distribution\nTrust (Jacare) and was initially accounted for using the equity\nmethod based on temporary control.  In December 1998, Enron\nfinancially closed the Elektro financial restructuring, reducing\nits interest in Jacare to 51%.",
+      "actor": "Enron",
+      "counterparty": "Jacare Electrical Distribution\nTrust (Jacare)"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "cc5dbf4fd28b65542ceb24dd",
+      "quote": "In November 1997, Enron acquired the minority interest in\nEnron Global Power & Pipelines L.L.C. (EPP) in a stock-for-stock\ntransaction.  Enron issued approximately 23 million common shares\nin exchange for the EPP shares held by the minority shareholders.",
+      "actor": "Enron",
+      "counterparty": "Enron Global Power & Pipelines L.L.C. (EPP)"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "59b4a7debb14b5f1948036e5",
+      "quote": "On November 8, 1999, Enron announced that it had entered into\nan agreement to sell Enron's wholly-owned electric utility\nsubsidiary, Portland General Electric Company (PGE), to Sierra\nPacific Resources for $2.1 billion, comprised of $2.02 billion in\ncash and the assumption of Enron's approximately $80 million\nmerger payment obligation.",
+      "actor": "Enron",
+      "counterparty": "Portland General Electric Company (PGE)"
+    }
+  ]
+}

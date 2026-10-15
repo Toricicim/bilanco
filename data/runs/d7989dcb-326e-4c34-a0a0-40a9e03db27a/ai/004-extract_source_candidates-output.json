@@ -1,0 +1,32 @@
+{
+  "candidates": [
+    {
+      "kind": "related_party",
+      "block_id": "9a68d4c4c99a36264d977d80",
+      "quote": "Enron owns a 50% voting interest in\nAtlantic Water Trust, which currently owns approximately 67%\nof Azurix common stock, with public stockholders owning the\nremainder.",
+      "actor": "Enron",
+      "counterparty": "Atlantic Water Trust"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "9a68d4c4c99a36264d977d80",
+      "quote": "Enron owns a 50% voting interest in\nAtlantic Water Trust, which currently owns approximately 67%\nof Azurix common stock, with public stockholders owning the\nremainder.",
+      "actor": "Atlantic Water Trust",
+      "counterparty": "Azurix"
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "f974fb7044e51d8004043d54",
+      "quote": "It is not anticipated that Enron will be\nrequired in the near future to expend amounts that are\nmaterial in relation to its total capital expenditures\nprogram by reason of environmental laws and regulations, but\ninasmuch as such laws and regulations are frequently\nchanged, Enron is unable to predict the ultimate cost of\ncompliance.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "f974fb7044e51d8004043d54",
+      "quote": "Although Enron believes that\nits operations are in compliance in all material respects\nwith all applicable environmental laws and regulations in\nthe applicable foreign jurisdictions, Enron also believes\nthat the operations of its projects eventually may be\nrequired to meet standards that are comparable in many\nrespects to those in effect in the United States and in\ncountries within the European Community.",
+      "actor": "Enron",
+      "counterparty": ""
+    }
+  ]
+}

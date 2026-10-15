@@ -1,0 +1,88 @@
+{
+  "candidates": [
+    {
+      "kind": "credit_trigger",
+      "block_id": "2a860568470890c7a03f97b8",
+      "quote": "Enron's ability to access the capital markets and\nequity markets during the periods covered by the forward-looking\nstatements, which will depend on general market conditions and\nEnron's ability to maintain or increase the credit ratings for\nits unsecured senior long-term debt obligations.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "bd59fe5baababc4bf80f798e",
+      "quote": "*10.24  -      Split Dollar Life Insurance Agreement\n               between Enron and the KLL and LPL Family\n               Partnership, Ltd., dated April 22, 1994\n               (Exhibit 10.17 to Enron Form 10-K for 1994).",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "bd59fe5baababc4bf80f798e",
+      "quote": "*10.25  -      Employment Agreement between Enron Corp.\n               and Kenneth L. Lay, executed December 18, 1996\n               (Exhibit 10.25 to Enron Form 10-K for 1996).",
+      "actor": "Enron Corp.",
+      "counterparty": "Kenneth L. Lay"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "bd59fe5baababc4bf80f798e",
+      "quote": "10.26  -      First Amendment to Employment Agreement\n               between Enron Corp. and Kenneth L. Lay, dated\n               February 7, 2000.",
+      "actor": "Enron Corp.",
+      "counterparty": "Kenneth L. Lay"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "bd59fe5baababc4bf80f798e",
+      "quote": "*10.27  -      Consulting Services Agreement between\n               Enron and John A. Urquhart dated August 1,\n               1991 (Exhibit 10.23 to Enron Form 10-K for\n               1991).",
+      "actor": "Enron",
+      "counterparty": "John A. Urquhart"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "bd59fe5baababc4bf80f798e",
+      "quote": "*10.28  -      First Amendment to Consulting Services\n               Agreement between Enron and John A. Urquhart,\n               dated August 27, 1992 (Exhibit 10.25 to Enron\n               Form 10-K for 1992).",
+      "actor": "Enron",
+      "counterparty": "John A. Urquhart"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "bd59fe5baababc4bf80f798e",
+      "quote": "*10.29  -      Second and Third Amendments to Consulting\n               Services Agreement between Enron and John A.\n               Urquhart, dated November 24, 1992 and February\n               26, 1993, respectively (Exhibit 10.26 to Enron\n               Form 10-K for 1992).",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "bd59fe5baababc4bf80f798e",
+      "quote": "*10.30  -      Fourth Amendment to Consulting Services\n               Agreement between Enron and John A. Urquhart\n               dated as of May 9, 1994 (Exhibit 10.35 to\n               Enron Form 10-K for 1995).",
+      "actor": "Enron",
+      "counterparty": "John A. Urquhart"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "bd59fe5baababc4bf80f798e",
+      "quote": "*10.31 -       Fifth Amendment to Consulting Services\n               Agreement between Enron and John A. Urquhart\n               (Exhibit 10.36 to Enron Form 10-K for 1995).",
+      "actor": "Enron",
+      "counterparty": "John A. Urquhart"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "bd59fe5baababc4bf80f798e",
+      "quote": "*10.32  -      Sixth Amendment to Consulting Services\n               Agreement between Enron and John A. Urquhart\n               (Exhibit 10.37 to Enron Form 10-K for 1995).",
+      "actor": "Enron",
+      "counterparty": "John A. Urquhart"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "bd59fe5baababc4bf80f798e",
+      "quote": "*10.33  -      Seventh Amendment to Consulting Services\n               Agreement between Enron and John A. Urquhart,\n               dated October 27, 1997 (Exhibit 10.27 to Enron\n               Form 10-K for 1997).",
+      "actor": "Enron",
+      "counterparty": "John A. Urquhart"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "bd59fe5baababc4bf80f798e",
+      "quote": "*10.34  -      Eighth Amendment to Consulting Services\n               Agreement between Enron and John A. Urquhart,\n               dated May 27, 1998 (Exhibit 10.28 to Enron\n               Form 10-K for 1998).",
+      "actor": "Enron",
+      "counterparty": "John A. Urquhart"
+    }
+  ]
+}

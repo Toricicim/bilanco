@@ -1,0 +1,39 @@
+{
+  "candidates": [
+    {
+      "kind": "credit_trigger",
+      "block_id": "fa21cf70b51b2cc4c9f36803",
+      "quote": "Enron is a party to certain financial contracts which contain\nprovisions for early settlement in the event of a significant\nmarket price decline in which Enron's common stock falls below\ncertain levels (prices ranging from $15.48 to $28.00 per share)\nor if the credit ratings for Enron's unsecured, senior long-term\ndebt obligations fall below investment grade.  The impact of this\nearly settlement could include the issuance of additional shares\nof Enron common stock.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "fa21cf70b51b2cc4c9f36803",
+      "quote": "Certain of the credit agreements\ncontain prefunding covenants.  However, such covenants are not\nexpected to restrict Enron's access to funds under these\nagreements.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "fa21cf70b51b2cc4c9f36803",
+      "quote": "Management\nbelieves that the sources of funding described above are\nsufficient to meet short- and long-term liquidity needs not met\nby cash flows from operations.",
+      "actor": "Management",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "fa21cf70b51b2cc4c9f36803",
+      "quote": "Enron's continued investment grade status is\ncritical to the success of its wholesale businesses as well as\nits ability to maintain adequate liquidity.  Enron's management\nbelieves it will be able to maintain or improve its credit\nrating.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "511d856ad61d0f2e481d1125",
+      "quote": "The Year 2000 problem has caused no material disruption to\nEnron's mission-critical facilities or operations, and resulted\nin no material costs.  Enron will remain vigilant for Year 2000\nrelated problems that may yet occur due to hidden defects in\ncomputer hardware or software at Enron or Enron's mission-\ncritical external entities.  Enron anticipates that the Year 2000\nproblem will not create material disruptions to its mission-\ncritical facilities or operations, and will not create material\ncosts.",
+      "actor": "Enron",
+      "counterparty": ""
+    }
+  ]
+}

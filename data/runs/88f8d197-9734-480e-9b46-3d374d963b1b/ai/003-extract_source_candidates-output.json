@@ -1,0 +1,60 @@
+{
+  "candidates": [
+    {
+      "kind": "related_party",
+      "block_id": "4b2c20ccfad8e52d5a01134c",
+      "quote": "Enron's intrastate natural gas pipelines include\nHouston Pipe Line Company (\"HPL\"), which owns a 5,269-mile\npipeline in Texas which interconnects with Northern,\nTranswestern, Florida Gas and numerous other interstate and\nintrastate pipelines.",
+      "actor": "Enron",
+      "counterparty": "Houston Pipe Line Company"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "4ba4c49ec1e948dac21e7152",
+      "quote": "Enron also owns an interest in Louisiana Resources\nCompany (\"LRC\"), which owns a 540-mile intrastate pipeline,\nand the Napoleonville natural gas storage facility in\nLouisiana, which accesses the LRC pipeline and provides four\nBcf of working capacity.",
+      "actor": "Enron",
+      "counterparty": "Louisiana Resources\nCompany"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "e2d919b80c966684e6d542b5",
+      "quote": "In connection with a Power Purchase Agreement between\nDabhol Power Company, Enron's 60%-owned subsidiary, and the\nMaharashtra State Electricity Board (the \"MSEB\"), Dabhol\nPower Company has constructed Phase I of an electricity\ngenerating power plant south of Mumbai, State of\nMaharashtra, India.",
+      "actor": "Enron",
+      "counterparty": "Dabhol Power Company"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "44440ab8ae2dab7f555f270a",
+      "quote": "Enron owns a 35%\ninterest in Transportadora de Gas del Sur (\"TGS\") in\nArgentina.",
+      "actor": "Enron",
+      "counterparty": "Transportadora de Gas del Sur"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "44440ab8ae2dab7f555f270a",
+      "quote": "Enron has a 25% interest in Transredes Transporte de\nHidrocarburos S.A. (\"Transredes\"), an approximately 3,570-\nmile system of natural gas, crude oil and products pipelines\nlocated in Bolivia and connecting Bolivian oil and gas\nreserves to major markets in Bolivia.",
+      "actor": "Enron",
+      "counterparty": "Transredes Transporte de\nHidrocarburos S.A."
+    },
+    {
+      "kind": "related_party",
+      "block_id": "da45f32ebebff81786d59ce9",
+      "quote": "Enron has a majority ownership interest in Elektro-\nElectricidade e Servicos S.A. (\"Elektro\").",
+      "actor": "Enron",
+      "counterparty": "Elektro-\nElectricidade e Servicos S.A."
+    },
+    {
+      "kind": "related_party",
+      "block_id": "da45f32ebebff81786d59ce9",
+      "quote": "Certain of Enron's operations in the Caribbean area are\nconducted through Enron Americas, Inc. and its subsidiary\ncompanies.",
+      "actor": "Enron",
+      "counterparty": "Enron Americas, Inc."
+    },
+    {
+      "kind": "related_party",
+      "block_id": "da45f32ebebff81786d59ce9",
+      "quote": "Enron Americas' subsidiary Industrias Ventane,\norganized in 1953, operates the leading natural gas liquids\ntransportation and distribution business in Venezuela.",
+      "actor": "Enron Americas",
+      "counterparty": "Industrias Ventane"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "call_id": "001-discover_sources",
+  "task": "discover_sources",
+  "prompt_version": "1",
+  "model_requested": "CLI default (resolved by Codex)",
+  "web_search": true,
+  "requested_policy": {
+    "sandbox": "read-only",
+    "load_user_config": false,
+    "project_doc_max_bytes": 0,
+    "disabled_features": [
+      "shell_tool",
+      "apps",
+      "hooks",
+      "plugins",
+      "remote_plugin",
+      "memories",
+      "multi_agent",
+      "browser_use",
+      "browser_use_external",
+      "computer_use",
+      "skill_search",
+      "skill_mcp_dependency_install",
+      "goals",
+      "view_image",
+      "image_generation",
+      "artifact",
+      "realtime_conversation",
+      "in_app_chat",
+      "in_app_local_automation",
+      "in_app_browser"
+    ]
+  },
+  "status": "accepted_schema",
+  "events": [
+    "thread.started",
+    "turn.started",
+    "web_search",
+    "web_search",
+    "agent_message",
+    "turn.completed"
+  ],
+  "input_sha256": "7ae92cd5b2b015b474130e7cc6def9186b6fc03ccb2d50f90134713a3ef6137c",
+  "usage": {
+    "input_tokens": 35110,
+    "cached_input_tokens": 13312,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 189,
+    "reasoning_output_tokens": 0
+  },
+  "duration_seconds": 13.731
+}

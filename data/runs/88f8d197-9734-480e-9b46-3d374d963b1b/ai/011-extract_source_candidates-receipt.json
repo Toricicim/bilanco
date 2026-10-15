@@ -1,0 +1,50 @@
+{
+  "call_id": "011-extract_source_candidates",
+  "task": "extract_source_candidates",
+  "prompt_version": "1",
+  "model_requested": "CLI default (resolved by Codex)",
+  "web_search": false,
+  "requested_policy": {
+    "sandbox": "read-only",
+    "load_user_config": false,
+    "project_doc_max_bytes": 0,
+    "disabled_features": [
+      "shell_tool",
+      "apps",
+      "hooks",
+      "plugins",
+      "remote_plugin",
+      "memories",
+      "multi_agent",
+      "browser_use",
+      "browser_use_external",
+      "computer_use",
+      "skill_search",
+      "skill_mcp_dependency_install",
+      "goals",
+      "view_image",
+      "image_generation",
+      "artifact",
+      "realtime_conversation",
+      "in_app_chat",
+      "in_app_local_automation",
+      "in_app_browser"
+    ]
+  },
+  "status": "accepted_schema",
+  "events": [
+    "thread.started",
+    "turn.started",
+    "agent_message",
+    "turn.completed"
+  ],
+  "input_sha256": "62a8d76c650a5b2ca4793ce0cc99b5ae3981bb99fe56e0412acf1a116f0e9a35",
+  "usage": {
+    "input_tokens": 16751,
+    "cached_input_tokens": 0,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 607,
+    "reasoning_output_tokens": 80
+  },
+  "duration_seconds": 20.0151
+}

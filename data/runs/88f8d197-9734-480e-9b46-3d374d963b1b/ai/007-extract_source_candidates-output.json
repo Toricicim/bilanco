@@ -1,0 +1,32 @@
+{
+  "candidates": [
+    {
+      "kind": "related_party",
+      "block_id": "2bb641483f16e9559e9412c0",
+      "quote": "The Gas Pipeline Group\nincludes Enron's interstate natural gas pipelines, primarily\nNorthern Natural Gas Company (Northern), Transwestern Pipeline\nCompany (Transwestern), Enron's 50% interest in Florida Gas\nTransmission Company (Florida Gas) and Enron's interests in\nNorthern Border Pipeline and EOTT Energy Partners, L.P. (EOTT).",
+      "actor": "Enron",
+      "counterparty": "Florida Gas\nTransmission Company"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "f683733c9605af0c35089e40",
+      "quote": "Florida Gas and\n    Northern Border Pipeline are unconsolidated equity affiliates.",
+      "actor": "",
+      "counterparty": "Florida Gas"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "c52b8c529205c782b94b8068",
+      "quote": "Included in 1999 was interest income earned in connection with\nthe financing of an acquisition by EOTT, while the 1998 amount\nincluded gains of $21 million recognized from the sale of an\ninterest in an equity investment, substantially offset by charges\nrelated to litigation.",
+      "actor": "",
+      "counterparty": "EOTT"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "c52b8c529205c782b94b8068",
+      "quote": "The 1998 results were impacted by a warmer than normal winter\nand the transfer of the majority of Portland General's\nelectricity wholesale business to the Enron Wholesale segment,\npartially offset by an increase in sales to retail customers.",
+      "actor": "Portland General",
+      "counterparty": "Enron Wholesale"
+    }
+  ]
+}

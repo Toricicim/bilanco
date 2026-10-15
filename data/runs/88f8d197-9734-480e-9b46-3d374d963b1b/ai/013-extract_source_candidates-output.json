@@ -1,0 +1,81 @@
+{
+  "candidates": [
+    {
+      "kind": "credit_trigger",
+      "block_id": "a6af924db2aa87d711165852",
+      "quote": "Absent certain defaults or other specified events, Enron has\nthe option to acquire the minority holders' interests in these\npartnerships.  If Enron does not acquire the minority holders'\ninterests before December 2004 through May 2009, or earlier upon\ncertain specified events, the entities will liquidate their\nassets and dissolve.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "related_party",
+      "block_id": "a9a90e89de84cd2576128cfd",
+      "quote": "(a) Includes $327 million and $196 million receivable from\n    Enron and $84 million and $296 million payable to Enron at\n    December 31, 1999 and 1998, respectively.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "related_party",
+      "block_id": "a9a90e89de84cd2576128cfd",
+      "quote": "(a) Enron recognized revenues from transactions with\n    unconsolidated equity affiliates of $161 million in 1999, $142\n    million in 1998 and $219 million in 1997.",
+      "actor": "Enron",
+      "counterparty": "unconsolidated equity affiliates"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "acf83b12473af0049be1871c",
+      "quote": "In 1997, Enron and a third-party investor contributed\napproximately $579 million and $500 million, respectively, for\ninterests in Whitewing.  Whitewing purchased 250,000 shares of\nEnron Series A Junior Convertible Preferred Stock (Series A\nPreferred Stock) from Enron. In March 1999, Whitewing was amended\nto allow, among other things, control to be shared equally\nbetween Enron and the third-party investor.",
+      "actor": "Enron",
+      "counterparty": "Whitewing"
+    },
+    {
+      "kind": "guarantee",
+      "block_id": "acf83b12473af0049be1871c",
+      "quote": "In addition, Enron entered\ninto a Share Settlement Agreement under which Enron could be\nobligated, under certain circumstances, to deliver additional\nshares of common stock or Series B Preferred Stock to Whitewing\nfor the amount that the market price of the converted Enron\ncommon shares is less than $28 per share.",
+      "actor": "Enron",
+      "counterparty": "Whitewing"
+    },
+    {
+      "kind": "credit_trigger",
+      "block_id": "acf83b12473af0049be1871c",
+      "quote": "Absent certain defaults or other specified\nevents, Enron has the option to acquire the outside investors'\ninterests.  If Enron does not acquire the outside investors'\ninterests before January 2003, or earlier upon certain specified\nevents, Whitewing will liquidate its assets and dissolve.",
+      "actor": "Enron",
+      "counterparty": "Whitewing"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "acf83b12473af0049be1871c",
+      "quote": "From time to time, Enron has entered into various\nadministrative service, management, construction, supply and\noperating agreements with its unconsolidated equity affiliates.",
+      "actor": "Enron",
+      "counterparty": "unconsolidated equity affiliates"
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "acf83b12473af0049be1871c",
+      "quote": "Enron's management believes that its existing agreements and\ntransactions are reasonable compared to those which could have\nbeen obtained from third parties.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "credit_trigger",
+      "block_id": "f650ae7bdd84056f2e757c2b",
+      "quote": "In connection with the Elektro and Wessex financings, which\nyielded proceeds of approximately $1.6 billion (see Notes 2 and\n9, respectively), Enron committed to cause the sale of Enron\nconvertible preferred stock, with the number of common shares\nissuable upon conversion determined based on future common stock\nprices, if certain debt obligations of the related entities\nacquiring such interests are defaulted upon, or in certain\nevents, including, among other things, Enron's credit ratings\nfalling below specified levels.  If the sale of stock were not\nsufficient to retire such obligations, Enron would be liable for\nthe shortfall.  The obligations will mature in December 2000 and\n2001 for Elektro and Wessex, respectively.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "guarantee",
+      "block_id": "f650ae7bdd84056f2e757c2b",
+      "quote": "If the sale of stock were not\nsufficient to retire such obligations, Enron would be liable for\nthe shortfall.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "related_party",
+      "block_id": "db8328430cb33390839ce77c",
+      "quote": "At December 31, 1999, Enron\nhad forward contracts to purchase 22.6 million shares of Enron\nCorp. common stock, including approximately 12 million shares\nwith JEDI, at an average price of $41.52 per share.  Enron may\npurchase the shares pursuant to the forward contracts with cash\nor an equivalent value of Enron common stock until April 2001.",
+      "actor": "Enron",
+      "counterparty": "JEDI"
+    }
+  ]
+}

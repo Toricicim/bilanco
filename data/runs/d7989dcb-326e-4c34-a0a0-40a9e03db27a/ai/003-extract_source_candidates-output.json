@@ -1,0 +1,74 @@
+{
+  "candidates": [
+    {
+      "kind": "related_party",
+      "block_id": "d2f338d5f195e9d5e9f6004c",
+      "quote": "Enron's intrastate natural gas pipelines include\nHouston Pipe Line Company (\"HPL\"), which owns a 5,269-mile\npipeline in Texas which interconnects with Northern,\nTranswestern, Florida Gas and numerous other interstate and\nintrastate pipelines.",
+      "actor": "Enron",
+      "counterparty": "Houston Pipe Line Company"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "d2f338d5f195e9d5e9f6004c",
+      "quote": "Enron also owns an interest in Louisiana Resources\nCompany (\"LRC\"), which owns a 540-mile intrastate pipeline,\nand the Napoleonville natural gas storage facility in\nLouisiana, which accesses the LRC pipeline and provides four\nBcf of working capacity.",
+      "actor": "Enron",
+      "counterparty": "Louisiana Resources\nCompany"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "d7c78a843590d20d87051212",
+      "quote": "In connection with a Power Purchase Agreement between\nDabhol Power Company, Enron's 60%-owned subsidiary, and the\nMaharashtra State Electricity Board (the \"MSEB\"), Dabhol\nPower Company has constructed Phase I of an electricity\ngenerating power plant south of Mumbai, State of\nMaharashtra, India.",
+      "actor": "Enron",
+      "counterparty": "Dabhol Power Company"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "d7c78a843590d20d87051212",
+      "quote": "Enron owns a 35%\ninterest in Transportadora de Gas del Sur (\"TGS\") in\nArgentina.",
+      "actor": "Enron",
+      "counterparty": "Transportadora de Gas del Sur"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "d7c78a843590d20d87051212",
+      "quote": "Enron has a 25% interest in Transredes Transporte de\nHidrocarburos S.A. (\"Transredes\"), an approximately 3,570-\nmile system of natural gas, crude oil and products pipelines\nlocated in Bolivia and connecting Bolivian oil and gas\nreserves to major markets in Bolivia.",
+      "actor": "Enron",
+      "counterparty": "Transredes Transporte de\nHidrocarburos S.A."
+    },
+    {
+      "kind": "related_party",
+      "block_id": "4fe8ec1fe76f548539ef2a5a",
+      "quote": "Enron has a majority ownership interest in Elektro-\nElectricidade e Servicos S.A. (\"Elektro\").",
+      "actor": "Enron",
+      "counterparty": "Elektro-\nElectricidade e Servicos S.A."
+    },
+    {
+      "kind": "related_party",
+      "block_id": "4fe8ec1fe76f548539ef2a5a",
+      "quote": "Certain of Enron's operations in the Caribbean area are\nconducted through Enron Americas, Inc. and its subsidiary\ncompanies.",
+      "actor": "Enron",
+      "counterparty": "Enron Americas, Inc."
+    },
+    {
+      "kind": "related_party",
+      "block_id": "4fe8ec1fe76f548539ef2a5a",
+      "quote": "Enron Americas' subsidiary Industrias Ventane,\norganized in 1953, operates the leading natural gas liquids",
+      "actor": "Enron Americas",
+      "counterparty": "Industrias Ventane"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "0ec076f0f9dc08b7d408a809",
+      "quote": "The Batangas power project, owned 100% by\nEnron, is an approximately 110-megawatt fuel-oil-fired\ndiesel engine plant located at Pinamucan, Batangas, on Luzon\nIsland, which began commercial operation in July 1993.",
+      "actor": "Enron",
+      "counterparty": "Batangas power project"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "0ec076f0f9dc08b7d408a809",
+      "quote": "The\nSubic Bay power project, owned 50% by Enron, is an\napproximately 116-megawatt fuel-oil-fired diesel engine\nplant located at the Subic Bay Freeport complex on Luzon\nIsland, which began commercial operation in February 1994.",
+      "actor": "Enron",
+      "counterparty": "Subic Bay power project"
+    }
+  ]
+}

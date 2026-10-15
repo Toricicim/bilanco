@@ -1,0 +1,81 @@
+{
+  "candidates": [
+    {
+      "kind": "related_party",
+      "block_id": "49f3d017c9905c06aee83b7d",
+      "quote": "In 1995, several parties (the Plaintiffs)\nfiled suit in Harris County District Court in Houston,\nTexas, against Intratex Gas Company (Intratex), Houston Pipe\nLine Company and Panhandle Gas Company (collectively, the\nEnron Defendants), each of which is a wholly-owned\nsubsidiary of Enron.",
+      "actor": "Enron",
+      "counterparty": "Intratex Gas Company"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "e4f042ea718e658388e6ff42",
+      "quote": "San Juan\nGas Company, Inc. (San Juan), an Enron subsidiary, operated\na propane/air distribution system in the vicinity.",
+      "actor": "Enron",
+      "counterparty": "San Juan\nGas Company, Inc."
+    },
+    {
+      "kind": "related_party",
+      "block_id": "caf764e48672b38bfb696e07",
+      "quote": "Houston Natural Gas Corporation, a\npredecessor of Enron Corp., merged with Liquid Carbonic\nIndustries (LCI) on January 31, 1969.  Liquid Carbonic\nCorporation (LCC), a subsidiary of LCI, had title to the\nsite.",
+      "actor": "LCI",
+      "counterparty": "Liquid Carbonic\nCorporation (LCC)"
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "49f3d017c9905c06aee83b7d",
+      "quote": "Although\nno assurances can be given, Enron believes, based on its\nexperience to date and after considering appropriate\nreserves that have been established, that the ultimate\nresolution of such items, individually or in the aggregate,\nwill not have a materially adverse impact on Enron's\nfinancial position or its results of operations.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "49f3d017c9905c06aee83b7d",
+      "quote": "The Enron Defendants deny the\nPlaintiffs' claims and have asserted various affirmative\ndefenses, including the statute of limitations.  The Enron\nDefendants believe that they have strong legal and factual\ndefenses, and intend to vigorously contest the claims.\nAlthough no assurances can be given, Enron believes that the\nultimate resolution of these matters will not have a\nmaterially adverse effect on its financial position or\nresults of operations.",
+      "actor": "Enron",
+      "counterparty": "Plaintiffs"
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "e4f042ea718e658388e6ff42",
+      "quote": "Although\nSan Juan did not provide service to the building, the\nNational Transportation Safety Board (NTSB) concluded that\nthe probable cause of the incident was propane leaking from\nSan Juan's distribution system.  San Juan and Enron strongly\ndisagree.  The NTSB found no path of migration of propane\nfrom San Juan's system to the building and no forensic\nevidence that propane fueled the explosion.",
+      "actor": "Enron",
+      "counterparty": "National Transportation Safety Board (NTSB)"
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "e4f042ea718e658388e6ff42",
+      "quote": "Enron, San Juan and its\naffiliates are vigorously contesting the claims.  Although\nno assurances can be given, Enron believes that the ultimate\nresolution of these matters will not have a materially\nadverse effect on its financial position or results of\noperations.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "20d1a708c65b63625939a950",
+      "quote": "Enron cannot predict the outcome of these\nactions.  Additionally, due to uncertainties in the\nregulatory process, management cannot predict, with\ncertainty, what ultimate rate-making action the OPUC will\ntake regarding PGE's recovery of a rate of return on its\nTrojan investment.  Although no assurances can be given,\nEnron believes that the ultimate resolution of these matters\nwill not have a material adverse effect on its financial\nposition or results of operations.",
+      "actor": "Enron",
+      "counterparty": "OPUC"
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "20d1a708c65b63625939a950",
+      "quote": "The EPA alleges that hazardous\nsubstances were released to the environment during the\nperiod in which Enron's predecessor owned the site, and that\nEnron's predecessor assumed the liabilities of the company\nthat operated the plant.  Enron contests these allegations.",
+      "actor": "Enron",
+      "counterparty": "EPA"
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "caf764e48672b38bfb696e07",
+      "quote": "Although\nEnron does not admit liability with respect to any costs at\nthis site, it agreed to cooperate with the EPA and other\npotentially responsible parties to undertake the work\ncontemplated by EPA's Order.",
+      "actor": "Enron",
+      "counterparty": "EPA"
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "caf764e48672b38bfb696e07",
+      "quote": "However,\nbased upon the amounts claimed and the nature and volume of\nmaterials sent to sites at which Enron has an interest,\nmanagement does not believe that any potential costs\nincurred in connection with these notices and third party\nclaims, either taken individually or in the aggregate, will\nhave a material impact on Enron's financial position or\nresults of operations.",
+      "actor": "Enron",
+      "counterparty": ""
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "candidates": [
+    {
+      "kind": "executive_conflict",
+      "block_id": "synthetic-block",
+      "quote": "A senior officer manages Counterparty Z, which purchased an investment.",
+      "actor": "A senior officer",
+      "counterparty": "Counterparty Z"
+    }
+  ]
+}

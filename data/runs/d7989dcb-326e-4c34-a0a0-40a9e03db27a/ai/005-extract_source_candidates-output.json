@@ -1,0 +1,25 @@
+{
+  "candidates": [
+    {
+      "kind": "management_counterstatement",
+      "block_id": "1896b74bc3f38cc721f86ba4",
+      "quote": "Enron believes that its operations and facilities are in\ngeneral compliance with applicable environmental\nregulations.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "1896b74bc3f38cc721f86ba4",
+      "quote": "However, management\ndoes not believe that any costs incurred in connection with\nthese sites (either individually or in the aggregate) will\nhave a material impact on Enron's financial position or\nresults of operations.",
+      "actor": "management",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "c74752ba4e0fc07eb4cae28c",
+      "quote": "Enron is of the opinion that it has generally\nsatisfactory title to its rights-of-way and lands used in\nthe conduct of its businesses, subject to liens for current\ntaxes, liens incident to operating agreements and minor\nencumbrances, easements and restrictions which do not\nmaterially detract from the value of such property or the\ninterest of Enron therein or the use of such properties in\nsuch businesses.",
+      "actor": "Enron",
+      "counterparty": ""
+    }
+  ]
+}

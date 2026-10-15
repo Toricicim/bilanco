@@ -1,0 +1,130 @@
+{
+  "candidates": [
+    {
+      "kind": "executive_conflict",
+      "block_id": "e0a8992f10f65dd938b2e536",
+      "quote": "*10.35  -      Ninth Amendment to Consulting Services\n               Agreement between Enron and John A. Urquhart,\n               dated December 31, 1998 (Exhibit 10.29 to\n               Enron Form 10-K for 1998).",
+      "actor": "Enron",
+      "counterparty": "John A. Urquhart"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "e0a8992f10f65dd938b2e536",
+      "quote": "10.36  -      Tenth Amendment to Consulting Services\n               Agreement between John A. Urquhart and Enron\n               Corp. dated January 1, 2000.",
+      "actor": "Enron\n               Corp.",
+      "counterparty": "John A. Urquhart"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "e0a8992f10f65dd938b2e536",
+      "quote": "*10.43  -      Employment Agreement between Enron\n               Capital Trade & Resources Corp. and Jeffrey K.\n               Skilling, dated January 1, 1996 (Exhibit 10.63\n               to Enron Form 10-K for 1996).",
+      "actor": "Enron\n               Capital Trade & Resources Corp.",
+      "counterparty": "Jeffrey K.\n               Skilling"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "e0a8992f10f65dd938b2e536",
+      "quote": "*10.44  -      First Amendment effective January 1,\n               1997, by and among Enron Corp., Enron Capital\n               & Trade Resources Corp., and Jeffrey K.\n               Skilling, amending Employment Agreement\n               between Enron Capital & Trade Resources Corp.\n               and Jeffrey K. Skilling dated January 1, 1996\n               (Exhibit 10.64 to Enron Form 10-K for 1996).",
+      "actor": "Enron Corp.",
+      "counterparty": "Jeffrey K. Skilling"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "e0a8992f10f65dd938b2e536",
+      "quote": "*10.45  -      Split Dollar Agreement between Enron and\n               Jeffrey K. Skilling dated May 23, 1997\n               (Exhibit 10.41 to Enron Form 10-K for 1997).",
+      "actor": "Enron",
+      "counterparty": "Jeffrey K. Skilling"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "e0a8992f10f65dd938b2e536",
+      "quote": "*10.46  -      Second Amendment effective October 13,\n               1997, to Employment Agreement between Enron\n               Corp. and Jeffrey K. Skilling (Exhibit 10.42\n               to Enron Form 10-K for 1997).",
+      "actor": "Enron\n               Corp.",
+      "counterparty": "Jeffrey K. Skilling"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "e0a8992f10f65dd938b2e536",
+      "quote": "*10.47  -      Loan Agreement effective October 13,\n               1997, between Enron Corp. and Jeffrey K.\n               Skilling (Exhibit 10.43 to Enron Form 10-K for\n               1997).",
+      "actor": "Enron Corp.",
+      "counterparty": "Jeffrey K.\n               Skilling"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "e0a8992f10f65dd938b2e536",
+      "quote": "10.48  -      Third Amendment to Employment Agreement\n               between Enron Corp. and Jeffrey K. Skilling,",
+      "actor": "Enron Corp.",
+      "counterparty": "Jeffrey K. Skilling"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "a27829f305115f9a6c30df93",
+      "quote": "*10.49  -      Employment Agreement dated July 20, 1996\n               (effective July 1, 1997) between Enron and Ken\n               L. Harrison (Exhibit 10.1 to Post-Effective\n               Amendment No. 1 to Enron's Registration\n               Statement on Form S-4, File No. 333-13791).",
+      "actor": "Enron",
+      "counterparty": "Ken\n               L. Harrison"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "a27829f305115f9a6c30df93",
+      "quote": "*10.50  -      Executive Employment Agreement between\n               Enron Corp. and Rebecca P. Mark, effective May\n               4, 1998 (Exhibit 10.41 to Enron Form 10-K for\n               1998).",
+      "actor": "Enron Corp.",
+      "counterparty": "Rebecca P. Mark"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "a27829f305115f9a6c30df93",
+      "quote": "10.51  -      First Amendment to Executive Employment\n               Agreement by and between Enron Corp., Azurix\n               Corp. and Rebecca P. Mark, dated February 1,\n               1999.",
+      "actor": "Enron Corp.",
+      "counterparty": "Rebecca P. Mark"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "a27829f305115f9a6c30df93",
+      "quote": "*10.52  -      Executive Employment Agreement between\n               Enron Corp. and Joseph W. Sutton, effective\n               June 23, 1998 (Exhibit 10.42 to Enron Form\n               10-K for 1998).",
+      "actor": "Enron Corp.",
+      "counterparty": "Joseph W. Sutton"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "a27829f305115f9a6c30df93",
+      "quote": "10.53  -      Amendment to Executive Employment\n               Agreement between Enron Corp. and Joseph W.\n               Sutton, dated May 5, 1999.",
+      "actor": "Enron Corp.",
+      "counterparty": "Joseph W.\n               Sutton"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "a27829f305115f9a6c30df93",
+      "quote": "10.54  -      Second Amendment to Executive Employment\n               Agreement between Enron Corp. and Joseph W.\n               Sutton, dated July 1, 1999.",
+      "actor": "Enron Corp.",
+      "counterparty": "Joseph W.\n               Sutton"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "a27829f305115f9a6c30df93",
+      "quote": "*10.55  -      Executive Employment Agreement between\n               Enron Operations Corp. and Stanley C. Horton,\n               dated as of October 1, 1999 (Exhibit 10.45 to\n               Enron Form 10-K for 1997).",
+      "actor": "Enron Operations Corp.",
+      "counterparty": "Stanley C. Horton"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "a27829f305115f9a6c30df93",
+      "quote": "10.56  -      First Amendment to Executive Employment\n               Agreement by and between Enron Operations\n               Corp., Enron Corp. and Stanley C. Horton,\n               dated December 27, 1999.",
+      "actor": "Enron Corp.",
+      "counterparty": "Stanley C. Horton"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "a27829f305115f9a6c30df93",
+      "quote": "10.57  -      Executive Employment Agreement between\n               Enron Corp. and Mark A. Frevert, effective\n               June 1, 1998.",
+      "actor": "Enron Corp.",
+      "counterparty": "Mark A. Frevert"
+    },
+    {
+      "kind": "audit_opinion",
+      "block_id": "4bb2bc07cf4cc9bc561bb11d",
+      "quote": "   In our opinion, the financial statements referred to above\npresent fairly, in all material respects, the financial position\nof Enron Corp. and subsidiaries as of December 31, 1999 and 1998,\nand the results of their operations, cash flows and changes in\nshareholders' equity for each of the three years in the period\nended December 31, 1999, in conformity with accounting principles\ngenerally accepted in the United States.\n\n   As discussed in Note 18 to the consolidated financial\nstatements, Enron Corp. and subsidiaries changed its method of\naccounting for costs of start-up activities and its method of\naccounting for certain contracts involved in energy trading and\nrisk management activities in the first quarter of 1999.\n\n\n\n\nARTHUR ANDERSEN LLP\n\nHouston, Texas\nMarch 13, 2000",
+      "actor": "ARTHUR ANDERSEN LLP",
+      "counterparty": "Enron Corp."
+    }
+  ]
+}

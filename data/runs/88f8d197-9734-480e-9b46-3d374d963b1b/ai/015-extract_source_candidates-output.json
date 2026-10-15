@@ -1,0 +1,46 @@
+{
+  "candidates": [
+    {
+      "kind": "related_party",
+      "block_id": "21e0a73515600c45fc6f0559",
+      "quote": "In the fourth quarter of 1999, LJM2, which has the\nsame general partner as LJM, acquired, directly or indirectly,\napproximately $360 million of merchant assets and investments\nfrom Enron, on which Enron recognized pre-tax gains of\napproximately $16 million.  In December 1999, LJM2 entered into\nan agreement to acquire Enron's interests in an unconsolidated\nequity affiliate for approximately $34 million.",
+      "actor": "LJM2",
+      "counterparty": "Enron"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "21e0a73515600c45fc6f0559",
+      "quote": "Additionally,\nLJM acquired other assets from Enron for $11 million.",
+      "actor": "LJM",
+      "counterparty": "Enron"
+    },
+    {
+      "kind": "executive_conflict",
+      "block_id": "21e0a73515600c45fc6f0559",
+      "quote": "In addition, an officer of Enron\nhas invested in the limited partner of JEDI and from time to time\nacts as agent on behalf of the limited partner's management.",
+      "actor": "an officer of Enron",
+      "counterparty": "the limited partner of JEDI"
+    },
+    {
+      "kind": "related_party",
+      "block_id": "21e0a73515600c45fc6f0559",
+      "quote": "In 1999, Whitewing acquired approximately $192 million of\nmerchant assets from Enron.  Enron recognized no gains or losses\nin connection with these transactions.",
+      "actor": "Whitewing",
+      "counterparty": "Enron"
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "21e0a73515600c45fc6f0559",
+      "quote": "Management believes that the terms of the transactions with\nrelated parties are representative of terms that would be\nnegotiated with unrelated third parties.",
+      "actor": "Management",
+      "counterparty": "related parties"
+    },
+    {
+      "kind": "audit_opinion",
+      "block_id": "c756285d40211bea05bcd52b",
+      "quote": "We have audited in accordance with generally accepted\nauditing standards, the consolidated financial statements of\nEnron Corp. and subsidiaries included in this Form 10-K and\nhave issued our report thereon dated March 13, 2000.  Our\naudit was made for the purpose of forming an opinion on the\nbasic financial statements taken as a whole.  The schedule\nlisted in Item 14(a)2 is the responsibility of the company's\nmanagement and is presented for purposes of complying with\nthe Securities and Exchange Commission's rules and is not\npart of the basic financial statements.  This schedule has\nbeen subjected to the auditing procedures applied in the\naudit of the basic financial statements and, in our opinion,\nfairly states in all material respects the financial data\nrequired to be set forth therein in relation to the basic\nfinancial statements taken as a whole.\n\n\n\n\n\nArthur Andersen LLP\n\nHouston, Texas\nMarch 13, 2000",
+      "actor": "Arthur Andersen LLP",
+      "counterparty": "Enron Corp. and subsidiaries"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "candidates": [
+    {
+      "kind": "management_counterstatement",
+      "block_id": "a4ca8a7d1cab7b6f5c23a174",
+      "quote": "Enron maintains credit\npolicies with regard to its counterparties that management\nbelieves significantly minimize overall credit risk.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "guarantee",
+      "block_id": "8f481de2e810bb9dcaab939b",
+      "quote": "(a) \"Investment Grade\" is primarily determined using publicly\n    available credit ratings along with consideration of\n    collateral, which encompass standby letters of credit, parent\n    company guarantees and property interests, including oil and\n    gas reserves.",
+      "actor": "",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "8f481de2e810bb9dcaab939b",
+      "quote": "Based on Enron's\npolicies, its exposures and its credit and other reserves, Enron\ndoes not anticipate a materially adverse effect on financial\nposition or results of operations as a result of counterparty\nnonperformance.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "8327b9fdd712bde6b9e0174f",
+      "quote": "However, Enron's management believes that its\nportfolio of receivables is well diversified and that such\ndiversification minimizes any potential credit risk.",
+      "actor": "Enron",
+      "counterparty": ""
+    },
+    {
+      "kind": "guarantee",
+      "block_id": "8327b9fdd712bde6b9e0174f",
+      "quote": "Guarantees of liabilities of unconsolidated entities and\nresidual value guarantees have no carrying value and fair values",
+      "actor": "",
+      "counterparty": ""
+    },
+    {
+      "kind": "credit_trigger",
+      "block_id": "ded6246868cde780769c38b7",
+      "quote": "Certain credit\nfacilities contain covenants which must be met to borrow funds.",
+      "actor": "",
+      "counterparty": ""
+    },
+    {
+      "kind": "management_counterstatement",
+      "block_id": "ded6246868cde780769c38b7",
+      "quote": "Such debt covenants are not anticipated to materially restrict\nEnron's ability to borrow funds under such facilities.",
+      "actor": "Enron",
+      "counterparty": ""
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "sources": [
+    {
+      "url": "https://www.sec.gov/Archives/edgar/data/1024401/0001024401-00-000002-index.html",
+      "purpose": "filing_metadata"
+    },
+    {
+      "url": "https://www.sec.gov/Archives/edgar/data/1024401/0001024401-00-000002.txt",
+      "purpose": "original_report"
+    },
+    {
+      "url": "https://picker.uchicago.edu/Enron/EnronAnnualReport1999.pdf",
+      "purpose": "original_report"
+    }
+  ]
+}
