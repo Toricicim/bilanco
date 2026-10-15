@@ -1,0 +1,35 @@
+[project]
+name = "bilanco"
+version = "0.1.0"
+description = "Kaynak ve tarih kontrollü, terminalden çalışan şirket inceleme hattı"
+requires-python = ">=3.12"
+dependencies = [
+  "beautifulsoup4>=4.13,<5",
+  "httpx>=0.28,<1",
+  "pdfplumber>=0.11,<1",
+  "psycopg[binary]>=3.2,<4",
+  "pydantic>=2.11,<3",
+  "python-dotenv>=1.1,<2",
+]
+
+[project.scripts]
+bilanco = "bilanco.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8.3,<10", "ruff>=0.11,<1", "reportlab>=4.3,<5"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["postgres: isolated PostgreSQL integration test"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]

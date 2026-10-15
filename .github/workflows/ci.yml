@@ -1,0 +1,32 @@
+name: Checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: bilanco_test
+          POSTGRES_PASSWORD: ephemeral_test_only
+          POSTGRES_DB: bilanco_test_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U bilanco_test -d bilanco_test_ci"
+          --health-interval 3s --health-timeout 3s --health-retries 15
+    env:
+      BILANCO_TEST_DATABASE_URL: postgresql://bilanco_test:ephemeral_test_only@localhost:5432/bilanco_test_ci
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked --all-groups
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run pytest -q
