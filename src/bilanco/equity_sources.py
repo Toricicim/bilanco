@@ -83,6 +83,7 @@ class EquityHTTP:
         self.client = client or httpx.Client(timeout=25, follow_redirects=False)
         self.owns_client = client is None
         self.last_request = 0.0
+        self.paused_hosts: set[str] = set()
 
     def close(self):
         if self.owns_client:
@@ -102,7 +103,10 @@ class EquityHTTP:
                     raw = cached.read_bytes()
                     if digest(raw) == sha:
                         return raw
-        time.sleep(max(0, 0.5 - (time.monotonic() - self.last_request)))
+        host = urlsplit(url).hostname
+        if host in self.paused_hosts:
+            raise ValueError("Kaynak bağlantısı bu koşuda duraklatıldı; önbellek korunuyor.")
+        time.sleep(max(0, 2.0 - (time.monotonic() - self.last_request)))
         self.last_request = time.monotonic()
         # No anti-bot bypass, TLS disabling, credentials or uncontrolled redirects.
         with self.client.stream(
@@ -111,6 +115,12 @@ class EquityHTTP:
             **({"json": body} if body is not None else {}),
             headers={"User-Agent": "BilancoResearch/0.2", "Referer": KAP + "/tr/bildirim-sorgu"},
         ) as response:
+            if response.status_code == 429:
+                self.paused_hosts.add(host)
+                raise ValueError(
+                    "HTTP 429; bu sunucuya yeni istekler durduruldu. "
+                    f"Retry-After: {response.headers.get('retry-after', 'belirtilmedi')}"
+                )
             if response.status_code != 200:
                 raise ValueError(f"HTTP {response.status_code}; kaynak alınamadı.")
             chunks, size = [], 0
@@ -180,8 +190,19 @@ def accept_kap(
     published = times.pop()
     if published > cutoff(as_of):
         raise ValueError("future_publication: kesimden sonra yayımlanmış belge.")
-    kind = "financial" if "finansal rapor" in fold(head) else "disclosure"
-    if "faaliyet raporu" in fold(head) and "donemi finansal rapor" not in fold(head):
+    # Classify the cover's own subject, not references to reports in the body.
+    # New-contract disclosures often mention the latest financial report.
+    cover_lines = [fold(line) for line in head.splitlines()[:12]]
+    kind = "disclosure"
+    if any(
+        re.fullmatch(r"(?:\d{2}\.\d{2}\.20\d{2} donemi )?finansal rapor", line)
+        for line in cover_lines
+    ):
+        kind = "financial"
+    elif any(
+        re.fullmatch(r"faaliyet raporu(?: konsolide olmayan| konsolide)?", line)
+        for line in cover_lines
+    ):
         kind = "activity"
     path = settings.data_dir / "raw" / sha
     atomic_write(path, raw)
@@ -514,6 +535,7 @@ def acquire(
         else:
             # Website endpoint is experimental, not the licensed production REST API.
             ids = set()
+            ordering = {}
             start = date(company.listed_at.year, 1, 1)
             try:
                 while start <= as_of:
@@ -547,7 +569,16 @@ def acquire(
                             and "devre kesici" not in subject
                             and "sorumluluk beyani" not in subject
                         ):
-                            ids.add(int(row["disclosureIndex"]))
+                            index = int(row["disclosureIndex"])
+                            ids.add(index)
+                            tier = (
+                                0
+                                if subject == "finansal rapor"
+                                else 1
+                                if "faaliyet raporu" in subject
+                                else 2
+                            )
+                            ordering[index] = (tier, -published.timestamp(), index)
                     start = end + timedelta(days=1)
             except (ValueError, KeyError, TypeError, httpx.HTTPError) as exc:
                 result.issues.append(
@@ -558,7 +589,8 @@ def acquire(
                     ids.update((1399375, 1399372, 1475464))
             if len(ids) > 400:
                 result.issues.append("400 bildirim sınırı aşıldı; tam kapsam yok.")
-            for index in sorted(ids)[:400]:
+            ordered_ids = sorted(ids, key=lambda i: ordering.get(i, (3, 0, -i)))
+            for index in ordered_ids[:400]:
                 progress(f"KAP PDF {index}")
                 try:
                     parent = add(client.request(f"{KAP}/tr/api/BildirimPdf/{index}"), index)

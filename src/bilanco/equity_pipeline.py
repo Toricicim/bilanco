@@ -32,6 +32,27 @@ def canonical_hash(analysis):
     )
 
 
+def evidence_order(sources):
+    """Spend the bounded text budget on current reports before old IPO exhibits."""
+    parents = {s.disclosure_id: s.kind for s in sources if s.kind != "attachment"}
+
+    def key(source):
+        kind = source.kind
+        if kind == "attachment" and parents.get(source.disclosure_id) == "activity":
+            kind = "activity"
+        priority = {
+            "financial": 0,
+            "financial_attachment": 1,
+            "activity": 2,
+            "disclosure": 3,
+            "attachment": 4,
+            "regulatory": 5,
+        }.get(kind, 6)
+        return priority, -source.published_at.timestamp(), source.id
+
+    return sorted(sources, key=key)
+
+
 def render(analysis: EquityAnalysis, assessment: EquityAssessment) -> str:
     lines = [
         f"# {analysis.company} — {analysis.as_of}",
@@ -168,7 +189,7 @@ def run_equity(
             analysis.rejected.extend(rejected)
         stage("tr_ai_evidence_extraction")
         complete, processed, cache_hits = True, 0, 0
-        for source in analysis.sources:
+        for source in evidence_order(analysis.sources):
             source_blocks = [b for b in analysis.blocks if b.source_id == source.id]
             # Carry explicit issuer alias definitions into later note packets.
             context = [

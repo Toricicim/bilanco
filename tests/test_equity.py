@@ -20,7 +20,7 @@ from bilanco.equity_models import (
     available_at,
     cutoff,
 )
-from bilanco.equity_pipeline import canonical_hash, run_equity
+from bilanco.equity_pipeline import canonical_hash, evidence_order, run_equity
 from bilanco.equity_replay import run_replay, snapshot_dates
 from bilanco.equity_rules import evaluate
 from bilanco.equity_sources import (
@@ -121,6 +121,41 @@ def dataset(settings, text=None):
     raw = pdf(text or report_text())
     source, blocks, _ = accept_kap(raw, 123, COMPANIES["ozatd"], date(2025, 3, 31), settings)
     return Dataset(sources=[source], blocks=blocks)
+
+
+def test_text_budget_prioritizes_reports_then_recent_disclosures(settings):
+    source = dataset(settings).sources[0]
+    old = source.model_copy(update={"id": "old-ipo", "kind": "attachment", "disclosure_id": 10})
+    recent = source.model_copy(
+        update={
+            "id": "recent",
+            "kind": "disclosure",
+            "published_at": source.published_at.replace(day=20),
+        }
+    )
+    parent = source.model_copy(update={"id": "activity", "kind": "activity", "disclosure_id": 20})
+    exhibit = source.model_copy(
+        update={"id": "activity-note", "kind": "attachment", "disclosure_id": 20}
+    )
+    ordered = evidence_order([old, recent, exhibit, parent, source])
+    assert ordered[0] == source
+    assert {s.id for s in ordered[1:3]} == {"activity", "activity-note"}
+    assert [s.id for s in ordered[-2:]] == ["recent", "old-ipo"]
+
+
+@pytest.mark.parametrize(
+    ("subject", "body"),
+    [
+        ("Yeni Is Iliskisi", "İşlem tutarı son finansal rapor hasılatına göre açıklanmıştır."),
+        ("Kurumsal Yonetim Uyum Raporu", "Faaliyet raporu içinde bilgilendirme yapılmıştır."),
+    ],
+)
+def test_report_mentions_do_not_reclassify_other_disclosures(settings, subject, body):
+    text = report_text().replace("31.12.2024 DONEMI FINANSAL RAPOR", subject)
+    text = text.replace("TMS 29 satin alma gucu 31.12.2024", body)
+    source, blocks, _ = accept_kap(pdf(text), 123, COMPANIES["ozatd"], date(2025, 3, 31), settings)
+    assert source.kind == "disclosure"
+    assert extract_financial(source, blocks) == ([], [])
 
 
 def numeric_analysis(settings, text=None):
@@ -782,6 +817,31 @@ def test_public_acquisition_to_pipeline_and_cache(settings):
     assert a.status == b.status == "complete"
     assert b.outcome == "dikkat_gerektiriyor"
     assert not any("999" in c for c in calls)
+
+
+def test_rate_limit_pauses_host_but_preserves_cache_and_other_hosts(settings):
+    calls = []
+
+    def handler(request):
+        calls.append(str(request.url))
+        if request.url.path == "/cached":
+            return httpx.Response(200, content=b"previously admitted bytes")
+        if request.url.path == "/limited":
+            return httpx.Response(429, headers={"Retry-After": "120"})
+        return httpx.Response(200, content=b"independent source")
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        http = EquityHTTP(settings, client=client)
+        url = "https://www.kap.org.tr"
+        http.request(url + "/cached")
+        with pytest.raises(ValueError, match="HTTP 429"):
+            http.request(url + "/limited")
+        count = len(calls)
+        with pytest.raises(ValueError, match="duraklatıldı"):
+            http.request(url + "/another")
+        assert http.request(url + "/cached") == b"previously admitted bytes"
+        assert len(calls) == count
+        assert http.request("https://spk.gov.tr/independent") == b"independent source"
 
 
 def test_spk_day_precision_and_only_relevant_company_section(settings):

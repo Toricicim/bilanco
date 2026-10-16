@@ -8,6 +8,8 @@ Terminalden çalışan, kaynak ve tarih kontrollü şirket inceleme hattı. İlk
 
 **Türkiye desteği:** OZATD ve karşılaştırma vakası HATSN için KAP belgeleri, Türkçe tablolar, fiyat/hacim ve aylık geçmiş değerlendirme eklendi. Enron komutu ve kayıtları korunur. Türkiye komutları SEC e-postası istemez. [Kullanım, belge aktarımı ve sınırlar](docs/turkiye.md).
 
+Gerçek KAP raporlarıyla 31 Mart 2025 kesimli [Özata HTML çıktısı](demos/ozatd-2025-03-31.html): iki finansal inceleme işareti, kısmi kapsam. Dosya tek başına paylaşılabilir.
+
 ```sh
 uv run bilanco analyze --company ozatd --as-of 2025-03-31
 uv run bilanco replay --company ozatd --study pre-2025-spk

@@ -118,6 +118,20 @@ SPK belgesi için ilk taramada gerçek Codex çağrısı yapıldı; çıkarım p
 
 196 otomatik test izole PostgreSQL ile geçti; Ruff kontrolleri temiz. Tarih sızıntısı, karşı örnekler ve kaynak hataları sentetik belgelerle sınandı. Bu sayı gerçek şirketlerde tahmin başarısı ölçümü değildir. Mevcut Enron analiz dosyasının SHA-256 değeri değişmedi.
 
+## Bağlantı düzeldikten sonraki finansal koşu
+
+16 Ekim 2026'da kullanıcının Sing-box servisi durdurulduktan sonra KAP PDF erişimi açıldı. Yukarıdaki25 kısmi tarama tarihsel kayıttır; otomatik olarak yeni finansal sonuca dönüşmedi. Yeni gerçek tek-tarih analizi **2025-03-31** için yapıldı.
+
+Son düzeltilmiş koşu `04d1cc5b-9fd5-42e1-b760-733b0ef574a1`:93 kabul edilmiş belge,38 tutar,18 gösterge; sonuç `sinirli_isaret`, durum `partial`. F01 kâr–nakit ayrışması, F03 nakit/kısa finansal borç oranı uyarısı. Net kâr225.351.000 TL, faaliyet nakdi−1.173.912.255 TL, nakit/kısa finansal borç%12,19. İki işaret aynı alanda; `dikkat_gerektiriyor` koşulu sağlanmadı. Hasılat değişimi−%39,44; faaliyet marjı artışı nedeniyle O01'in ortak koşulu oluşmadı. Bu bulgular hile tespiti değildir.
+
+Finansal/faaliyet sayısal kapsamı kullanılabilir; ilişkiler ve denetim için tam metin kapsamı yeterli sayılmadı.128 bulgunun126'sı bağlam.56 ret/çıkarım eksikliği, OCR ve ek kapsamı sorunları ile AI bütçesi açıkça korunur. Finansal yatırımların likiditesi nakit oranından çıkarılamaz; bu uyarının bilinmeyeni olarak gösterilir.
+
+İlk geniş koşu `23defebb-1514-4515-8b6d-df5b81e30fef`32 yeni çağrı/1 önbellekle956,45 saniye sürdü. Belge türü düzeltmesi sonrası yeni koşu, aynı program fonksiyonuyla `max_ai_calls=0` kullanılarak33 doğrulanmış önbellek paketiyle34,81 saniyede yeniden hesaplandı. CLI en az1 yeni çağrı bütçesi kabul eder; bu cache-only yeniden hesaplama Python API'sindeki çalışma bütçesidir. Önbellekte olmayan metinler incelenmiş sayılmadı.
+
+Gerçek veriyle bulunan okuyucu sorunu düzeltildi: belge türü, gövdedeki “finansal rapor/faaliyet raporu” ifadesinden değil kapak başlığından belirlenir. Kaynak edinimi ve AI sırası finansal raporları/faaliyet raporlarını önce, diğer açıklamaları güncelden eskiye işler. Yeni HTTP istekleri arasında en az2 saniye var; HTTP429 alınırsa aynı sunucuya bu koşuda yeni istek yapılmaz, sağlam önbellek ve diğer sunucular kullanılabilir. Eşikler değiştirilmedi.
+
+[Çevrimdışı HTML](../demos/ozatd-2025-03-31.html) yalnız bu iki kayıtlı JSON'u görselleştirir; programın içine arayüz eklenmedi.200 test ve Ruff kontrolleri geçti. HTML'nin JSON/alıntı/filtre/indirme ve mobil/masaüstü kontrolleri de geçti. Sonraki görev, insan incelemesi ve daha geniş tarih/şirket örneklemi; başarı yüzdesi ölçülmüş değildir.
+
 ## Kaynak ve teknik araştırma
 
 - [KAP resmî üretim REST erişim koşulları](https://www.kap.org.tr/tr/api/about/content-file/8a019492945fbe080194b26d8bed4873)
