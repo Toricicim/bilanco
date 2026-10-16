@@ -8,6 +8,14 @@ Terminalden çalışan, kaynak ve tarih kontrollü şirket inceleme hattı. İlk
 
 Tamamlanan koşunun ayrı, çevrimdışı görsel çıktısı: [Enron HTML demosu](demos/enron-run-88f8d197.html). Dosya kayıtlı sonucu gösterir; analiz programını çalıştırmaz. [Demo açıklaması](demos/README.md).
 
+Kayıtlı çalışmadan yeni inceleme öncelikleri üretmek için:
+
+```sh
+uv run bilanco assess --run-id 88f8d197-9734-480e-9b46-3d374d963b1b
+```
+
+Bu komut belge indirmeden ek Codex değerlendirmesi yapar; kaynak çalışma mevcut veritabanında kayıtlı olmalıdır. Yeni `analyze` çalışmalarında bu adım otomatik çalışır. Ayrı JSON/Markdown raporu üretir; eski sonuçları değiştirmez. [Kurallar, bütçe ve sınırlar](docs/assessment.md) · [40 yapay karşı örnek](evaluation/README.md).
+
 ```text
 analyze komutu
   → çalışma sırasında SEC kaynağı / tarihli arşiv kopyası

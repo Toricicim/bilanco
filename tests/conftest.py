@@ -63,6 +63,16 @@ NOTES TO CONSOLIDATED FINANCIAL STATEMENTS
 class MemoryStore:
     def __init__(self):
         self.downloads, self.runs = {}, {}
+        self.assessments = {}
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_):
+        pass
+
+    def initialize(self):
+        pass
 
     def cached_download(self, url):
         return self.downloads.get(url)
@@ -78,6 +88,19 @@ class MemoryStore:
 
     def finish(self, analysis):
         self.runs[analysis.run_id] = analysis.model_dump(mode="json")
+
+    def load_analysis(self, run_id):
+        from bilanco.models import Analysis
+
+        if run_id not in self.runs:
+            raise ValueError("Unknown run")
+        return Analysis.model_validate(self.runs[run_id])
+
+    def start_assessment(self, assessment):
+        self.assessments[assessment.id] = {"status": "running"}
+
+    def finish_assessment(self, assessment):
+        self.assessments[assessment.id] = assessment.model_dump(mode="json")
 
 
 class FakeCodex:

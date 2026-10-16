@@ -7,6 +7,7 @@ from typing import Any
 import psycopg
 from psycopg.types.json import Jsonb
 
+from .assessment_models import Assessment
 from .models import Analysis
 
 DDL = """
@@ -55,6 +56,28 @@ CREATE TABLE IF NOT EXISTS bilanco.findings (
 INSERT INTO bilanco.migrations(version) VALUES (1) ON CONFLICT DO NOTHING;
 """
 
+ASSESSMENT_DDL = """
+CREATE TABLE IF NOT EXISTS bilanco.assessments (
+    id uuid PRIMARY KEY, source_run_id uuid NOT NULL REFERENCES bilanco.runs(id),
+    source_analysis_sha256 text NOT NULL, rule_version text NOT NULL,
+    status text NOT NULL, started_at timestamptz NOT NULL DEFAULT now(),
+    finished_at timestamptz, payload jsonb
+);
+CREATE INDEX IF NOT EXISTS assessments_source_run ON bilanco.assessments(source_run_id);
+INSERT INTO bilanco.migrations(version) VALUES (2) ON CONFLICT DO NOTHING;
+"""
+
+
+def analysis_digest(analysis: Analysis) -> str:
+    return digest(
+        json.dumps(
+            analysis.model_dump(mode="json"),
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+    )
+
 
 def digest(content: bytes) -> str:
     return hashlib.sha256(content).hexdigest()
@@ -95,8 +118,46 @@ class Store:
             version = self.connection.execute(
                 "SELECT max(version) FROM bilanco.migrations"
             ).fetchone()[0]
-            if version != 1:
+            if version not in (1, 2):
                 raise RuntimeError("Desteklenmeyen veritabanı şeması")
+            self.connection.execute(ASSESSMENT_DDL)
+
+    def load_analysis(self, run_id: str) -> Analysis:
+        row = self.connection.execute(
+            "SELECT analysis FROM bilanco.runs WHERE id=%s", (run_id,)
+        ).fetchone()
+        if not row or not row[0]:
+            raise ValueError("Tamamlanmış kaynak analiz bulunamadı.")
+        return Analysis.model_validate(row[0])
+
+    def start_assessment(self, assessment: Assessment) -> None:
+        source = self.load_analysis(assessment.source_run_id)
+        if analysis_digest(source) != assessment.source_analysis_sha256:
+            raise ValueError("Kaynak analiz özeti eşleşmedi.")
+        self.connection.execute(
+            "INSERT INTO bilanco.assessments(id,source_run_id,source_analysis_sha256,rule_version,status) VALUES (%s,%s,%s,%s,'running')",
+            (
+                assessment.id,
+                assessment.source_run_id,
+                assessment.source_analysis_sha256,
+                assessment.rule_version,
+            ),
+        )
+
+    def finish_assessment(self, assessment: Assessment) -> None:
+        with self.connection.transaction():
+            updated = self.connection.execute(
+                "UPDATE bilanco.assessments SET status=%s,finished_at=now(),payload=%s WHERE id=%s AND source_run_id=%s AND source_analysis_sha256=%s",
+                (
+                    assessment.status,
+                    Jsonb(assessment.model_dump(mode="json")),
+                    assessment.id,
+                    assessment.source_run_id,
+                    assessment.source_analysis_sha256,
+                ),
+            )
+            if updated.rowcount != 1:
+                raise ValueError("Değerlendirme kaynak kaydı eşleşmedi.")
 
     def cached_download(self, url: str) -> dict | None:
         row = self.connection.execute(

@@ -13,6 +13,7 @@ from typing import TypeVar
 
 from pydantic import BaseModel, ValidationError
 
+from .assessment_models import RelationReview
 from .config import Settings
 from .documents import normalize
 from .models import Block, Candidate, Discovery, Extraction, Finding, Locator, Narrative
@@ -347,6 +348,9 @@ class Codex:
             },
             Narrative,
         )
+
+    def assess_relations(self, packet: dict) -> RelationReview:
+        return self.ask("assess_related_party_evidence_v2", packet, RelationReview)
 
 
 CANDIDATE_LABELS = {

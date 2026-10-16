@@ -63,3 +63,48 @@ def test_database_does_not_accept_dangling_evidence(postgres):
             "INSERT INTO bilanco.facts VALUES (%s,'bad','cash',1999,1,'dollars',1,'unknown','{}')",
             ("00000000-0000-0000-0000-000000000000",),
         )
+
+
+@pytest.mark.postgres
+def test_assessment_migration_and_immutable_source(settings, postgres, monkeypatch):
+    from bilanco.assessment import run_assessment
+
+    class NoModel:
+        calls = 0
+        receipts = []
+
+        def assess_relations(self, _):
+            pytest.fail("No relation candidates in this synthetic filing")
+
+    with httpx.Client(
+        transport=httpx.MockTransport(lambda _: httpx.Response(200, content=synthetic_filing()))
+    ) as client:
+        source = run_analysis(
+            settings,
+            postgres,
+            acquirer=Acquirer(settings, postgres, client=client),
+            codex=FakeCodex(),
+        )
+    saved = postgres.load_analysis(source.run_id).model_dump_json()
+    postgres.initialize()
+    postgres.initialize()
+    assert (
+        postgres.connection.execute("SELECT max(version) FROM bilanco.migrations").fetchone()[0]
+        == 2
+    )
+    result = run_assessment(settings, postgres, source, codex=NoModel())
+    postgres.finish_assessment(result)
+    assert (
+        postgres.connection.execute(
+            "SELECT count(*) FROM bilanco.assessments WHERE id=%s", (result.id,)
+        ).fetchone()[0]
+        == 1
+    )
+    payload = postgres.connection.execute(
+        "SELECT payload FROM bilanco.assessments WHERE id=%s", (result.id,)
+    ).fetchone()[0]
+    assert payload["source_run_id"] == source.run_id
+    assert postgres.load_analysis(source.run_id).model_dump_json() == saved
+    changed = result.model_copy(update={"source_analysis_sha256": "f" * 64})
+    with pytest.raises(ValueError, match="eşleşmedi"):
+        postgres.finish_assessment(changed)

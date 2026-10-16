@@ -11,6 +11,7 @@ import psycopg
 
 from . import __version__
 from .ai import AIError, Codex, validate_candidates
+from .assessment import run_assessment
 from .config import AS_OF, Settings
 from .models import Block, Extraction
 from .pipeline import run_analysis
@@ -29,6 +30,10 @@ def parser() -> argparse.ArgumentParser:
     analyze.add_argument(
         "--refresh", action="store_true", help="Belgeleri önbellek yerine yeniden indir"
     )
+    assess = sub.add_parser(
+        "assess", help="Kayıtlı analizden kaynaklı inceleme öncelikleri üretir; veri indirmez"
+    )
+    assess.add_argument("--run-id", required=True, type=uuid.UUID)
     sub.add_parser(
         "doctor", help="Yerel kurulum kontrolü; finansal veri indirmez veya model çağırmaz"
     )
@@ -154,6 +159,35 @@ def main(argv: list[str] | None = None) -> int:
                 for row in store.recent_runs():
                     print(" | ".join(str(value) for value in row))
                 return 0
+            if args.command == "assess":
+                try:
+                    source = store.load_analysis(str(args.run_id))
+                except ValueError:
+                    print("Kaynak çalışma bulunamadı veya henüz tamamlanmadı.", file=sys.stderr)
+                    return 2
+                assessment = run_assessment(
+                    settings,
+                    store,
+                    source,
+                    progress=lambda stage: print(f"[bilanco] {stage}", file=sys.stderr),
+                )
+                directory = settings.data_dir / "assessments" / assessment.id
+                print(
+                    json.dumps(
+                        {
+                            "assessment_id": assessment.id,
+                            "source_run_id": source.run_id,
+                            "status": assessment.status,
+                            "assessment": str(directory / "assessment.json"),
+                            "report": str(directory / "assessment.md"),
+                            "coverage": assessment.coverage,
+                            "timings": assessment.timings,
+                        },
+                        ensure_ascii=False,
+                        indent=2,
+                    )
+                )
+                return {"complete": 0, "partial": 3, "failed": 1}[assessment.status]
             result = run_analysis(
                 settings,
                 store,
@@ -161,6 +195,31 @@ def main(argv: list[str] | None = None) -> int:
                 progress=lambda stage: print(f"[bilanco] {stage}", file=sys.stderr),
             )
             directory = settings.data_dir / "runs" / result.run_id
+            assessment_output = None
+            assessment_incomplete = False
+            if result.status != "failed" and result.sources:
+                try:
+                    assessment = run_assessment(
+                        settings,
+                        store,
+                        result,
+                        remaining_calls=max(0, settings.max_ai_calls - result.ai.get("calls", 0)),
+                        progress=lambda stage: print(f"[bilanco] {stage}", file=sys.stderr),
+                    )
+                    target = settings.data_dir / "assessments" / assessment.id
+                    assessment_output = {
+                        "id": assessment.id,
+                        "status": assessment.status,
+                        "assessment": str(target / "assessment.json"),
+                        "report": str(target / "assessment.md"),
+                    }
+                    assessment_incomplete = assessment.status != "complete"
+                except (OSError, ValueError, psycopg.Error):
+                    print(
+                        "[bilanco] Öncelik raporu kaydedilemedi; kaynak analiz dosyaları korundu.",
+                        file=sys.stderr,
+                    )
+                    assessment_incomplete = True
             if result.status == "failed":
                 for reason in result.ai.get("acquisition_notes", [])[:3]:
                     print(f"[bilanco] {reason}", file=sys.stderr)
@@ -172,12 +231,17 @@ def main(argv: list[str] | None = None) -> int:
                         "analysis": str(directory / "analysis.json"),
                         "report": str(directory / "report.md"),
                         "timings": result.timings,
+                        "assessment": assessment_output,
                     },
                     ensure_ascii=False,
                     indent=2,
                 )
             )
-            return {"complete": 0, "partial": 3, "failed": 1}[result.status]
+            return (
+                3
+                if result.status == "complete" and assessment_incomplete
+                else {"complete": 0, "partial": 3, "failed": 1}[result.status]
+            )
     except psycopg.Error:
         print(
             "PostgreSQL bağlantısı/işlemi başarısız. DATABASE_URL ve veritabanını kontrol et; bağlantı bilgileri yazdırılmadı.",

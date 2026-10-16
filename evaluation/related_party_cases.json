@@ -1,0 +1,407 @@
+{
+  "version": "related-party-1",
+  "synthetic": true,
+  "label_status": "proposed_rule_expectations_not_human_gold",
+  "cases": [
+    {
+      "id": "direct_management-1",
+      "family": "direct_management",
+      "split": "dev",
+      "text": "Alex North00 is the chief financial officer of Fictional Reporter plc and the managing director of Orion 00A Partners. Fictional Reporter plc sold an investment to Orion 00A Partners during 1999 and recognized a gain. No approval procedure is described in this excerpt.",
+      "expected_first_review_provisional": true,
+      "critical_negative": false,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "direct_management-2",
+      "family": "direct_management",
+      "split": "dev",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. Alex South00 is the chief financial officer of Fictional Reporter plc and the managing director of Orion 00B Partners. Fictional Reporter plc sold an investment to Orion 00B Partners during 1999 and recognized a gain. No approval procedure is described in this excerpt. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": true,
+      "critical_negative": false,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "controlling_executive-1",
+      "family": "controlling_executive",
+      "split": "dev",
+      "text": "The treasurer of Fictional Reporter plc, Alex North01, controls Orion 01A Partners through a majority voting interest. Fictional Reporter plc made a loan to Orion 01A Partners in 1999. The loan increased the company's receivables. Management states that market terms were used.",
+      "expected_first_review_provisional": true,
+      "critical_negative": false,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "controlling_executive-2",
+      "family": "controlling_executive",
+      "split": "dev",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. The treasurer of Fictional Reporter plc, Alex South01, controls Orion 01B Partners through a majority voting interest. Fictional Reporter plc made a loan to Orion 01B Partners in 1999. The loan increased the company's receivables. Management states that market terms were used. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": true,
+      "critical_negative": false,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "general_partner-1",
+      "family": "general_partner",
+      "split": "test",
+      "text": "Orion 02A Partners is a private investment partnership. Alex North02, a senior officer of Fictional Reporter plc, is the managing member of its general partner. Fictional Reporter plc transferred a financial asset to Orion 02A Partners in exchange for a receivable. The asset and receivable were recorded at stated fair value.",
+      "expected_first_review_provisional": true,
+      "critical_negative": false,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "general_partner-2",
+      "family": "general_partner",
+      "split": "test",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. Orion 02B Partners is a private investment partnership. Alex South02, a senior officer of Fictional Reporter plc, is the managing member of its general partner. Fictional Reporter plc transferred a financial asset to Orion 02B Partners in exchange for a receivable. The asset and receivable were recorded at stated fair value. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": true,
+      "critical_negative": false,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "counterparty_ceo-1",
+      "family": "counterparty_ceo",
+      "split": "test",
+      "text": "Fictional Reporter plc purchased equipment from Orion 03A Partners. The supplier's chief executive is Alex North03, who also serves as an executive officer of Fictional Reporter plc. The purchase was recorded as a fixed asset. The excerpt does not explain the approval process.",
+      "expected_first_review_provisional": true,
+      "critical_negative": false,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "counterparty_ceo-2",
+      "family": "counterparty_ceo",
+      "split": "test",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. Fictional Reporter plc purchased equipment from Orion 03B Partners. The supplier's chief executive is Alex South03, who also serves as an executive officer of Fictional Reporter plc. The purchase was recorded as a fixed asset. The excerpt does not explain the approval process. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": true,
+      "critical_negative": false,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "employment-1",
+      "family": "employment",
+      "split": "dev",
+      "text": "Employment Agreement between Fictional Reporter plc and Alex North04, appointing Alex North04 as chief executive. Orion 04A Partners is listed elsewhere as an unrelated potential supplier. This employment agreement does not give Alex North04 a position at Orion 04A Partners.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "employment-2",
+      "family": "employment",
+      "split": "dev",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. Employment Agreement between Fictional Reporter plc and Alex South04, appointing Alex South04 as chief executive. Orion 04B Partners is listed elsewhere as an unrelated potential supplier. This employment agreement does not give Alex South04 a position at Orion 04B Partners. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "compensation-1",
+      "family": "compensation",
+      "split": "test",
+      "text": "Fictional Reporter plc agreed to pay its employee Alex North05 a salary and a standard annual bonus. The employee has no management position at Orion 05A Partners. No transaction between Fictional Reporter plc and Orion 05A Partners is described.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "compensation-2",
+      "family": "compensation",
+      "split": "test",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. Fictional Reporter plc agreed to pay its employee Alex South05 a salary and a standard annual bonus. The employee has no management position at Orion 05B Partners. No transaction between Fictional Reporter plc and Orion 05B Partners is described. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "consulting-1",
+      "family": "consulting",
+      "split": "dev",
+      "text": "Consulting Services Agreement between Fictional Reporter plc and Alex North06. The consultant provides technical advice to Fictional Reporter plc. Orion 06A Partners is an unrelated company mentioned in a separate directory, with no role or transaction described here.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "consulting-2",
+      "family": "consulting",
+      "split": "dev",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. Consulting Services Agreement between Fictional Reporter plc and Alex South06. The consultant provides technical advice to Fictional Reporter plc. Orion 06B Partners is an unrelated company mentioned in a separate directory, with no role or transaction described here. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "director_contract-1",
+      "family": "director_contract",
+      "split": "test",
+      "text": "An agreement records Alex North07's appointment to the board of Fictional Reporter plc and ordinary board fees. Orion 07A Partners has a separate board. This passage does not state that Alex North07 holds any position at Orion 07A Partners.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "director_contract-2",
+      "family": "director_contract",
+      "split": "test",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. An agreement records Alex South07's appointment to the board of Fictional Reporter plc and ordinary board fees. Orion 07B Partners has a separate board. This passage does not state that Alex South07 holds any position at Orion 07B Partners. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "passive_ownership-1",
+      "family": "passive_ownership",
+      "split": "dev",
+      "text": "Fictional Reporter plc owns a small passive equity investment in Orion 08A Partners. Alex North08 is an officer of Fictional Reporter plc. The company does not appoint managers to Orion 08A Partners, and this excerpt describes no purchase, sale, loan or guarantee between the two companies.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "passive_ownership-2",
+      "family": "passive_ownership",
+      "split": "dev",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. Fictional Reporter plc owns a small passive equity investment in Orion 08B Partners. Alex South08 is an officer of Fictional Reporter plc. The company does not appoint managers to Orion 08B Partners, and this excerpt describes no purchase, sale, loan or guarantee between the two companies. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "subsidiary-1",
+      "family": "subsidiary",
+      "split": "test",
+      "text": "Orion 09A Partners is a wholly owned subsidiary of Fictional Reporter plc. Its accounts are consolidated with the parent. Alex North09 is identified only as an employee of the parent; no counterparty management role or individual transaction is described.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "subsidiary-2",
+      "family": "subsidiary",
+      "split": "test",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. Orion 09B Partners is a wholly owned subsidiary of Fictional Reporter plc. Its accounts are consolidated with the parent. Alex South09 is identified only as an employee of the parent; no counterparty management role or individual transaction is described. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "negated_role-1",
+      "family": "negated_role",
+      "split": "dev",
+      "text": "Alex North10, a senior officer of Fictional Reporter plc, does not manage or control Orion 10A Partners. Fictional Reporter plc bought supplies from Orion 10A Partners during 1999. The text explicitly denies a management link on the counterparty side.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "negated_role-2",
+      "family": "negated_role",
+      "split": "dev",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. Alex South10, a senior officer of Fictional Reporter plc, does not manage or control Orion 10B Partners. Fictional Reporter plc bought supplies from Orion 10B Partners during 1999. The text explicitly denies a management link on the counterparty side. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "not_reporting_executive-1",
+      "family": "not_reporting_executive",
+      "split": "test",
+      "text": "Alex North11 manages Orion 11A Partners but is not an officer or employee of Fictional Reporter plc. Fictional Reporter plc bought a service from Orion 11A Partners. There is no common executive in this passage.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "not_reporting_executive-2",
+      "family": "not_reporting_executive",
+      "split": "test",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. Alex South11 manages Orion 11B Partners but is not an officer or employee of Fictional Reporter plc. Fictional Reporter plc bought a service from Orion 11B Partners. There is no common executive in this passage. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "different_counterparty-1",
+      "family": "different_counterparty",
+      "split": "dev",
+      "text": "Alex North12, an officer of Fictional Reporter plc, manages Orion 12A Partners. Fictional Reporter plc sold an investment to Different Buyer Ltd, an unrelated entity. There was no transaction with Orion 12A Partners; the manager relationship and reported sale concern different counterparties.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "different_counterparty-2",
+      "family": "different_counterparty",
+      "split": "dev",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. Alex South12, an officer of Fictional Reporter plc, manages Orion 12B Partners. Fictional Reporter plc sold an investment to Different Buyer Ltd, an unrelated entity. There was no transaction with Orion 12B Partners; the manager relationship and reported sale concern different counterparties. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "similar_names-1",
+      "family": "similar_names",
+      "split": "test",
+      "text": "Alex North13, an officer of Fictional Reporter plc, manages Orion 13A Partners. Fictional Reporter plc sold equipment to Orion 13A Partners2. Orion 13A Partners and Orion 13A Partners2 are distinct legal entities with different owners and management. No transaction with Orion 13A Partners is reported.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "similar_names-2",
+      "family": "similar_names",
+      "split": "test",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. Alex South13, an officer of Fictional Reporter plc, manages Orion 13B Partners. Fictional Reporter plc sold equipment to Orion 13B Partners2. Orion 13B Partners and Orion 13B Partners2 are distinct legal entities with different owners and management. No transaction with Orion 13B Partners is reported. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "role_without_transaction-1",
+      "family": "role_without_transaction",
+      "split": "dev",
+      "text": "Fictional Reporter plc discloses that its senior officer Alex North14 is also a managing partner of Orion 14A Partners. No transaction, balance or commitment between Fictional Reporter plc and Orion 14A Partners is described in the passage.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "role_without_transaction-2",
+      "family": "role_without_transaction",
+      "split": "dev",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. Fictional Reporter plc discloses that its senior officer Alex South14 is also a managing partner of Orion 14B Partners. No transaction, balance or commitment between Fictional Reporter plc and Orion 14B Partners is described in the passage. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "proposal_only-1",
+      "family": "proposal_only",
+      "split": "test",
+      "text": "Alex North15 is an officer of Fictional Reporter plc and a director of Orion 15A Partners. Fictional Reporter plc is considering a possible sale to Orion 15A Partners, but the board rejected the proposal and no agreement or transfer occurred.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "proposal_only-2",
+      "family": "proposal_only",
+      "split": "test",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. Alex South15 is an officer of Fictional Reporter plc and a director of Orion 15B Partners. Fictional Reporter plc is considering a possible sale to Orion 15B Partners, but the board rejected the proposal and no agreement or transfer occurred. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "fair_value_only-1",
+      "family": "fair_value_only",
+      "split": "dev",
+      "text": "Fictional Reporter plc sold an asset to its related investee Orion 16A Partners and reported a gain. Management believes that the price reflected fair value. No officer on the counterparty side, independent appraisal or external approval is described. Alex North16 is not involved in the transaction.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "fair_value_only-2",
+      "family": "fair_value_only",
+      "split": "dev",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. Fictional Reporter plc sold an asset to its related investee Orion 16B Partners and reported a gain. Management believes that the price reflected fair value. No officer on the counterparty side, independent appraisal or external approval is described. Alex South16 is not involved in the transaction. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "controls_do_not_erase_link-1",
+      "family": "controls_do_not_erase_link",
+      "split": "test",
+      "text": "Alex North17, the chief operating officer of Fictional Reporter plc, is also the managing partner of Orion 17A Partners. Fictional Reporter plc sold assets to Orion 17A Partners and recognized income. An independent board committee is reported to have approved the transaction. Management says that the terms were fair.",
+      "expected_first_review_provisional": true,
+      "critical_negative": false,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "controls_do_not_erase_link-2",
+      "family": "controls_do_not_erase_link",
+      "split": "test",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. Alex South17, the chief operating officer of Fictional Reporter plc, is also the managing partner of Orion 17B Partners. Fictional Reporter plc sold assets to Orion 17B Partners and recognized income. An independent board committee is reported to have approved the transaction. Management says that the terms were fair. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": true,
+      "critical_negative": false,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "negated_transaction-1",
+      "family": "negated_transaction",
+      "split": "dev",
+      "text": "Alex North18, a senior officer of Fictional Reporter plc, manages Orion 18A Partners. Fictional Reporter plc did not sell, lend or transfer any asset to Orion 18A Partners; the potential transaction was cancelled before execution.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "negated_transaction-2",
+      "family": "negated_transaction",
+      "split": "dev",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. Alex South18, a senior officer of Fictional Reporter plc, manages Orion 18B Partners. Fictional Reporter plc did not sell, lend or transfer any asset to Orion 18B Partners; the potential transaction was cancelled before execution. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "ambiguous_identity-1",
+      "family": "ambiguous_identity",
+      "split": "test",
+      "text": "An unidentified executive is said to manage an unnamed investment vehicle. Separately, Fictional Reporter plc sold an investment to Orion 19A Partners. The document does not identify the executive's employer or establish whether the vehicle is Orion 19A Partners. Alex North19 is mentioned only as the author of the filing.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "ambiguous_identity-2",
+      "family": "ambiguous_identity",
+      "split": "test",
+      "text": "The following is a fictional annual disclosure for the year ended December 31, 1999. An unidentified executive is said to manage an unnamed investment vehicle. Separately, Fictional Reporter plc sold an investment to Orion 19B Partners. The document does not identify the executive's employer or establish whether the vehicle is Orion 19B Partners. Alex South19 is mentioned only as the author of the filing. No other relationships are asserted by this excerpt.",
+      "expected_first_review_provisional": false,
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    }
+  ]
+}

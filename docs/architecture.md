@@ -1,6 +1,10 @@
 # V1 mimari sözleşmesi
 
-Güncelleme: 2026-10-15. Grafik/HTML/HTTP API/daemon bu sürümün parçası değildir.
+Güncelleme: 2026-10-16. Grafik/HTML/HTTP API/daemon analiz hattının parçası değildir. Tamamlanmış bir koşunun ayrı HTML gösterimi `demos/` altındadır.
+
+## Ek değerlendirme katmanı
+
+`assess --run-id` kayıtlı Analysis v1'i değiştirmeden yönetici/ilişkili işlem adaylarını değerlendirir. Yeni `analyze` komutları aynı adımı otomatik çağırır. AI alıntılı alt soruları cevaplar; Python kaynak denetimi, öncelik kuralı, tekrarları birleştirme ve sıralamayı uygular. Assessment v1, ayrı `data/assessments/<id>/` dosyaları ve şema sürümü 2'deki `assessments` tablosuna yazılır. Eski Analysis şeması korunur. [Tam sözleşme ve sınırlar](assessment.md).
 
 ## Parçalar ve sınırlar
 

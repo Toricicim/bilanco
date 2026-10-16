@@ -11,4 +11,6 @@ dist/
 build/
 .coverage
 htmlcov/
+data/assessments/
+data/evaluations/
 .DS_Store
