@@ -6,6 +6,16 @@ gerisi çok önemli değil
 
 Terminalden çalışan, kaynak ve tarih kontrollü şirket inceleme hattı. İlk sürüm: **Enron Corp., 31 Mart 2000 gün sonu (New York)**. Arayüz, grafik, HTML veya sürekli veri taraması içermez.
 
+**Türkiye desteği:** OZATD ve karşılaştırma vakası HATSN için KAP belgeleri, Türkçe tablolar, fiyat/hacim ve aylık geçmiş değerlendirme eklendi. Enron komutu ve kayıtları korunur. Türkiye komutları SEC e-postası istemez. [Kullanım, belge aktarımı ve sınırlar](docs/turkiye.md).
+
+```sh
+uv run bilanco analyze --company ozatd --as-of 2025-03-31
+uv run bilanco replay --company ozatd --study pre-2025-spk
+uv run bilanco replay --company ozatd --study pre-2026-funds
+```
+
+Kaynak erişilemezse sonuç kısmi/yetersiz veri olur; eksik belge risk yok anlamına gelmez. `--bundle ./belgeler` ile tarih kontrollü KAP PDF/CSV aktarımı, `--offline` ile finansal HTTP yapmadan paket incelemesi desteklenir. Yeni yerel sonuçlar `data/runs/` ve `data/replays/` altında saklanır; Git'e eklenmez. Önceden paylaşılmış Enron snapshot dosyaları korunur.
+
 Tamamlanan koşunun ayrı, çevrimdışı görsel çıktısı: [Enron HTML demosu](demos/enron-run-88f8d197.html). Dosya kaynak analizi ve son ilişkili işlem değerlendirmesini gösterir; analiz programını çalıştırmaz. [Demo açıklaması](demos/README.md).
 
 Kayıtlı çalışmadan yeni inceleme öncelikleri üretmek için:
@@ -15,6 +25,8 @@ uv run bilanco assess --run-id 88f8d197-9734-480e-9b46-3d374d963b1b
 ```
 
 Bu komut belge indirmeden ek Codex değerlendirmesi yapar; kaynak çalışma mevcut veritabanında kayıtlı olmalıdır. Yeni `analyze` çalışmalarında bu adım otomatik çalışır. Ayrı JSON/Markdown raporu üretir; eski sonuçları değiştirmez. [Kurallar, bütçe ve sınırlar](docs/assessment.md) · [48 yapay regresyon örneği](evaluation/README.md).
+
+Enron akışı:
 
 ```text
 analyze komutu
@@ -37,7 +49,7 @@ uv sync --locked
 cp .env.example .env
 ```
 
-`.env` içindeki `BILANCO_SEC_CONTACT` alanına kendi iletişim e-postanı yaz. SEC, otomatik isteklerde kimliği belirten User-Agent ister. Bu bilgi model paketlerine veya rapora eklenmez. Kimlik/anahtar dosyalarını projeye kopyalama.
+Enron analizi için `.env` içindeki `BILANCO_SEC_CONTACT` alanına kendi iletişim e-postanı yaz. SEC, otomatik isteklerde kimliği belirten User-Agent ister. Bu bilgi model paketlerine veya rapora eklenmez. Kimlik/anahtar dosyalarını projeye kopyalama.
 
 **Yerel PostgreSQL zaten çalışıyorsa:**
 
@@ -62,7 +74,7 @@ uv run bilanco doctor
 
 `doctor` yerel bağlantıyı ve Codex oturum durumunu kontrol eder; finansal belge indirmez, model çağırmaz. Mevcut yerel PostgreSQL 14+ ile aynı SQL şeması kullanılabilir; Compose ve CI hedefi PostgreSQL 18'dir.
 
-## Çalıştırma
+## Enron çalıştırma
 
 **Gerçek veri toplama ve model kullanımı bu komutla başlar:**
 
@@ -76,7 +88,7 @@ Kaynakları yeniden indirmek için:
 uv run bilanco analyze --company enron --as-of 2000-03-31 --refresh
 ```
 
-Toplanan kaynaklar içerik hash'i ile `data/raw/` altında saklanır. Önbellek kullanılmadan önce dosyanın hash'i tekrar kontrol edilir. Başka tarih/şirket henüz desteklenmez; program bu girdileri veri toplamadan reddeder. Kurulumda veya arka planda otomatik indirme yoktur. Önceki elle hazırlanmış HTML, TSV, rapor ve indirilmiş PDF'ler okunmaz.
+Toplanan kaynaklar içerik hash'i ile `data/raw/` altında saklanır. Önbellek kullanılmadan önce dosyanın hash'i tekrar kontrol edilir. Enron akışında başka tarih desteklenmez; Türkiye hisseleri için yukarıdaki komutları kullan. Kurulumda veya arka planda otomatik indirme yoktur. Önceki elle hazırlanmış HTML, TSV, rapor ve indirilmiş PDF'ler okunmaz.
 
 Çıktılar her çalışmaya özel `data/runs/<run-id>/` altında:
 

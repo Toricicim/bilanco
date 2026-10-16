@@ -6,6 +6,7 @@ import subprocess
 import sys
 import uuid
 from datetime import date
+from pathlib import Path
 
 import psycopg
 
@@ -13,6 +14,9 @@ from . import __version__
 from .ai import AIError, Codex, validate_candidates
 from .assessment import run_assessment
 from .config import AS_OF, Settings
+from .equity_models import COMPANIES
+from .equity_pipeline import run_equity
+from .equity_replay import STUDIES, run_replay
 from .models import Block, Extraction
 from .pipeline import run_analysis
 from .storage import Store
@@ -25,8 +29,14 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--version", action="version", version=__version__)
     sub = result.add_subparsers(dest="command", required=True)
     analyze = sub.add_parser("analyze", help="Gerçek kaynak toplama ve Codex analizi başlatır")
-    analyze.add_argument("--company", required=True, choices=["enron"])
+    analyze.add_argument("--company", required=True, type=str.lower, choices=["enron", *COMPANIES])
     analyze.add_argument("--as-of", required=True, type=date.fromisoformat)
+    analyze.add_argument("--bundle", type=Path, help="Doğrulamalı KAP PDF / piyasa CSV paketi")
+    analyze.add_argument(
+        "--offline",
+        action="store_true",
+        help="Finansal HTTP yok; yalnız verilen paket, Codex bağlantısı yine gerekir",
+    )
     analyze.add_argument(
         "--refresh", action="store_true", help="Belgeleri önbellek yerine yeniden indir"
     )
@@ -34,6 +44,12 @@ def parser() -> argparse.ArgumentParser:
         "assess", help="Kayıtlı analizden kaynaklı inceleme öncelikleri üretir; veri indirmez"
     )
     assess.add_argument("--run-id", required=True, type=uuid.UUID)
+    replay = sub.add_parser("replay", help="Aynı kurallarla aylık geçmiş değerlendirmeler")
+    replay.add_argument("--company", required=True, type=str.lower, choices=list(COMPANIES))
+    replay.add_argument("--study", required=True, choices=list(STUDIES))
+    replay.add_argument("--bundle", type=Path)
+    replay.add_argument("--refresh", action="store_true")
+    replay.add_argument("--offline", action="store_true")
     sub.add_parser(
         "doctor", help="Yerel kurulum kontrolü; finansal veri indirmez veya model çağırmaz"
     )
@@ -138,7 +154,10 @@ def main(argv: list[str] | None = None) -> int:
                     )
                 )
                 return 1
-        if args.command == "analyze":
+        if args.command == "analyze" and args.company == "enron":
+            if args.bundle or args.offline:
+                print("Enron akışı --bundle kullanmıyor.", file=sys.stderr)
+                return 2
             if args.as_of != AS_OF:
                 print("İlk sürüm yalnız 2000-03-31 tarihini destekliyor.", file=sys.stderr)
                 return 2
@@ -159,6 +178,70 @@ def main(argv: list[str] | None = None) -> int:
                 for row in store.recent_runs():
                     print(" | ".join(str(value) for value in row))
                 return 0
+            if args.command == "replay":
+                result = run_replay(
+                    settings,
+                    store,
+                    company_id=args.company,
+                    study=args.study,
+                    bundle=args.bundle,
+                    refresh=args.refresh,
+                    offline=args.offline,
+                    progress=lambda s: print(f"[bilanco] {s}", file=sys.stderr),
+                )
+                directory = settings.data_dir / "replays" / result["id"]
+                print(
+                    json.dumps(
+                        {
+                            "replay_id": result["id"],
+                            "status": result["status"],
+                            "first_indicator_attention": result["first_indicator_attention"],
+                            "replay": str(directory / "replay.json"),
+                            "report": str(directory / "replay.md"),
+                        },
+                        ensure_ascii=False,
+                        indent=2,
+                    )
+                )
+                return (
+                    130
+                    if result["status"] == "cancelled"
+                    else 0
+                    if result["status"] == "complete"
+                    else 3
+                )
+            if args.command == "analyze" and args.company in COMPANIES:
+                analysis, assessment = run_equity(
+                    settings,
+                    store,
+                    company_id=args.company,
+                    as_of=args.as_of,
+                    bundle=args.bundle,
+                    refresh=args.refresh,
+                    offline=args.offline,
+                    progress=lambda s: print(f"[bilanco] {s}", file=sys.stderr),
+                )
+                directory = settings.data_dir / "runs" / analysis.run_id
+                print(
+                    json.dumps(
+                        {
+                            "run_id": analysis.run_id,
+                            "status": analysis.status,
+                            "outcome": assessment.outcome,
+                            "coverage": assessment.coverage,
+                            "analysis": str(directory / "analysis.json"),
+                            "assessment": str(directory / "assessment.json"),
+                            "report": str(directory / "report.md"),
+                        },
+                        ensure_ascii=False,
+                        indent=2,
+                    )
+                )
+                return (
+                    130
+                    if analysis.ai.get("cancelled")
+                    else {"complete": 0, "partial": 3, "failed": 1}[analysis.status]
+                )
             if args.command == "assess":
                 try:
                     source = store.load_analysis(str(args.run_id))

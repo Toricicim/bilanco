@@ -67,6 +67,19 @@ CREATE INDEX IF NOT EXISTS assessments_source_run ON bilanco.assessments(source_
 INSERT INTO bilanco.migrations(version) VALUES (2) ON CONFLICT DO NOTHING;
 """
 
+EQUITY_DDL = """
+CREATE TABLE IF NOT EXISTS bilanco.equity_results (
+    run_id uuid PRIMARY KEY REFERENCES bilanco.runs(id),
+    analysis jsonb NOT NULL, assessment jsonb NOT NULL,
+    source_analysis_sha256 text NOT NULL
+);
+CREATE TABLE IF NOT EXISTS bilanco.replays (
+    id uuid PRIMARY KEY, company text NOT NULL, study text NOT NULL,
+    payload jsonb NOT NULL, created_at timestamptz NOT NULL DEFAULT now()
+);
+INSERT INTO bilanco.migrations(version) VALUES (3) ON CONFLICT DO NOTHING;
+"""
+
 
 def analysis_digest(analysis: Analysis) -> str:
     return digest(
@@ -118,9 +131,59 @@ class Store:
             version = self.connection.execute(
                 "SELECT max(version) FROM bilanco.migrations"
             ).fetchone()[0]
-            if version not in (1, 2):
+            if version not in (1, 2, 3):
                 raise RuntimeError("Desteklenmeyen veritabanı şeması")
             self.connection.execute(ASSESSMENT_DDL)
+            self.connection.execute(EQUITY_DDL)
+
+    def finish_equity(self, analysis, assessment) -> None:
+        from .equity_pipeline import canonical_hash
+
+        expected = canonical_hash(analysis)
+        if (
+            assessment.source_run_id != analysis.run_id
+            or assessment.source_analysis_sha256 != expected
+        ):
+            raise ValueError("Türkiye değerlendirmesinin kaynak analizi eşleşmedi.")
+        with self.connection.transaction():
+            existing = self.connection.execute(
+                "SELECT source_analysis_sha256,assessment FROM bilanco.equity_results WHERE run_id=%s",
+                (analysis.run_id,),
+            ).fetchone()
+            if existing and (
+                existing[0] != expected or existing[1] != assessment.model_dump(mode="json")
+            ):
+                raise ValueError("Kayıtlı Türkiye analizi değiştirilemez; yeni koşu başlat.")
+            self.connection.execute(
+                "INSERT INTO bilanco.equity_results VALUES (%s,%s,%s,%s) ON CONFLICT DO NOTHING",
+                (
+                    analysis.run_id,
+                    Jsonb(analysis.model_dump(mode="json")),
+                    Jsonb(assessment.model_dump(mode="json")),
+                    expected,
+                ),
+            )
+            self.connection.execute(
+                "UPDATE bilanco.runs SET status=%s,stage='finished',finished_at=now() WHERE id=%s",
+                (analysis.status, analysis.run_id),
+            )
+
+    def load_equity(self, run_id):
+        from .equity_models import EquityAnalysis, EquityAssessment
+
+        row = self.connection.execute(
+            "SELECT analysis,assessment FROM bilanco.equity_results WHERE run_id=%s",
+            (run_id,),
+        ).fetchone()
+        if not row:
+            raise ValueError("Türkiye analizi bulunamadı.")
+        return EquityAnalysis.model_validate(row[0]), EquityAssessment.model_validate(row[1])
+
+    def save_replay(self, payload):
+        self.connection.execute(
+            "INSERT INTO bilanco.replays(id,company,study,payload) VALUES (%s,%s,%s,%s)",
+            (payload["id"], payload["company"], payload["study"], Jsonb(payload)),
+        )
 
     def load_analysis(self, run_id: str) -> Analysis:
         row = self.connection.execute(

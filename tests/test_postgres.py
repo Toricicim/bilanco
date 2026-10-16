@@ -90,7 +90,7 @@ def test_assessment_migration_and_immutable_source(settings, postgres, monkeypat
     postgres.initialize()
     assert (
         postgres.connection.execute("SELECT max(version) FROM bilanco.migrations").fetchone()[0]
-        == 2
+        == 3
     )
     result = run_assessment(settings, postgres, source, codex=NoModel())
     postgres.finish_assessment(result)
@@ -108,3 +108,29 @@ def test_assessment_migration_and_immutable_source(settings, postgres, monkeypat
     changed = result.model_copy(update={"source_analysis_sha256": "f" * 64})
     with pytest.raises(ValueError, match="eşleşmedi"):
         postgres.finish_assessment(changed)
+
+
+@pytest.mark.postgres
+def test_equity_migration_and_roundtrip_preserve_enron(settings, postgres):
+    from datetime import date
+
+    from test_equity import EmptyAI, dataset
+
+    from bilanco.equity_pipeline import run_equity
+
+    before = postgres.connection.execute("SELECT count(*) FROM bilanco.facts").fetchone()[0]
+    analysis, assessment = run_equity(
+        settings,
+        postgres,
+        company_id="ozatd",
+        as_of=date(2025, 3, 31),
+        dataset=dataset(settings),
+        codex=EmptyAI(),
+    )
+    postgres.finish_equity(analysis, assessment)
+    loaded_analysis, loaded_assessment = postgres.load_equity(analysis.run_id)
+    assert loaded_analysis == analysis and loaded_assessment == assessment
+    assert postgres.connection.execute("SELECT count(*) FROM bilanco.facts").fetchone()[0] == before
+    changed = assessment.model_copy(update={"outcome": "yetersiz_veri"})
+    with pytest.raises(ValueError, match="değiştirilemez"):
+        postgres.finish_equity(analysis, changed)
