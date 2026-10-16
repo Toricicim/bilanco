@@ -6,7 +6,7 @@ gerisi çok önemli değil
 
 Terminalden çalışan, kaynak ve tarih kontrollü şirket inceleme hattı. İlk sürüm: **Enron Corp., 31 Mart 2000 gün sonu (New York)**. Arayüz, grafik, HTML veya sürekli veri taraması içermez.
 
-Tamamlanan koşunun ayrı, çevrimdışı görsel çıktısı: [Enron HTML demosu](demos/enron-run-88f8d197.html). Dosya kayıtlı sonucu gösterir; analiz programını çalıştırmaz. [Demo açıklaması](demos/README.md).
+Tamamlanan koşunun ayrı, çevrimdışı görsel çıktısı: [Enron HTML demosu](demos/enron-run-88f8d197.html). Dosya kaynak analizi ve son ilişkili işlem değerlendirmesini gösterir; analiz programını çalıştırmaz. [Demo açıklaması](demos/README.md).
 
 Kayıtlı çalışmadan yeni inceleme öncelikleri üretmek için:
 
