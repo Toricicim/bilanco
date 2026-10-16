@@ -13,3 +13,5 @@ Güncelleme: 2026-10-16.
 - Grafikler yalnız kayıtlı oranları/yüzde değişimlerini gösterir. Ekranda yuvarlanan sayıların tam hassasiyeti gömülü JSON'da korunur.
 - İki bölümün arama, filtre, sayfalama ve kaynak alıntıları çevrimdışı çalışır. Yazdırmada seçili filtrelere uyan bütün kayıtlar açılır. Özgün SEC bağlantısına tıklamak internet gerektirir.
 - Bu, tamamlanmış koşunun sabit görsel çıktısıdır; uygulamanın analiz hattına arayüz veya yeni veri toplama adımı eklenmedi.
+
+Not (2026-10-16): Bu dosya related-party-1 koşusunun tarihsel snapshot’ıdır. Kod daha sonra related-party-2 ile düzeltildi; eski JSON/HTML sessizce değiştirilmedi. Yeni kural çıktısı için yeni assess çalışması gerekir.

@@ -17,8 +17,8 @@ from .acquisition import (
 )
 from .ai import AIError, Codex, validate_candidates, validate_order
 from .calculations import BASE_CONCEPTS, calculate, overall
-from .config import AS_OF, INDEX_URL, PERIOD, SUBMISSIONS_URL, Settings
-from .documents import archive_identity_ok, extract_facts, read_document
+from .config import AS_OF, PERIOD, SUBMISSIONS_URL, Settings
+from .documents import extract_facts, read_document
 from .models import Analysis, Block, Source
 from .report import render
 from .storage import Store, atomic_write, write_json
@@ -91,20 +91,18 @@ def run_analysis(
     def add_document(source: Source, content: bytes) -> None:
         if any(known.sha256 == source.sha256 for known in analysis.sources):
             return
+        if source.provenance == "archive_copy":
+            issues.append("Arşiv kopyasının tarihsel sürümü kanıtlanmadı; analize alınmadı.")
+            return
         read_start = time.perf_counter()
         blocks, read_issues = read_document(source, content)
         analysis.timings["document_reading"] = round(
             analysis.timings.get("document_reading", 0) + time.perf_counter() - read_start, 4
         )
-        if source.provenance == "archive_copy" and not archive_identity_ok(blocks):
-            issues.append("Arşiv PDF kimlik/sürüm kontrolünü geçmedi; analize alınmadı.")
-            return
         if not blocks:
             issues.extend(read_issues)
             return
         issues.extend(read_issues)
-        if source.provenance == "archive_copy":
-            issues.append(source.version_note)
         analysis.sources.append(source)
         analysis.blocks.extend(blocks)
 
@@ -148,6 +146,16 @@ def run_analysis(
                             {"reason": "discovery_url_not_allowed", "url": candidate.url}
                         )
                         continue
+                    if candidate.purpose == "original_report" and candidate.url.lower().endswith(
+                        ".pdf"
+                    ):
+                        analysis.rejected.append(
+                            {
+                                "reason": "archive_version_unverified",
+                                "url": candidate.url,
+                            }
+                        )
+                        continue
                     try:
                         download = http.get(candidate.url)
                         if candidate.purpose == "filing_metadata":
@@ -165,12 +173,8 @@ def run_analysis(
                         elif candidate.purpose == "original_report" and download.content.startswith(
                             b"%PDF-"
                         ):
-                            try:
-                                proof = index_proof(http.get(INDEX_URL), AS_OF)
-                            except AcquisitionError:
-                                proof = submissions_proof(http, AS_OF)
-                            add_document(
-                                make_source(download, proof, "archive_copy"), download.content
+                            analysis.rejected.append(
+                                {"reason": "archive_version_unverified", "url": candidate.url}
                             )
                         else:
                             proof = sgml_proof(
@@ -267,6 +271,7 @@ def run_analysis(
             analysis.status = "failed"
             issues.extend(analysis.ai.get("acquisition_notes", []))
     except KeyboardInterrupt:
+        analysis.ai["cancelled"] = True
         issues.append(
             "Çalışma kullanıcı tarafından kesildi. Tamamlanmış ham indirmeler önbellekte korundu."
         )

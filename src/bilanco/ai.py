@@ -350,7 +350,7 @@ class Codex:
         )
 
     def assess_relations(self, packet: dict) -> RelationReview:
-        return self.ask("assess_related_party_evidence_v2", packet, RelationReview)
+        return self.ask("assess_related_party_evidence_v3", packet, RelationReview)
 
 
 CANDIDATE_LABELS = {

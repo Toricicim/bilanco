@@ -1,5 +1,5 @@
 {
-  "version": "related-party-1",
+  "version": "related-party-2",
   "synthetic": true,
   "label_status": "proposed_rule_expectations_not_human_gold",
   "cases": [
@@ -11,7 +11,8 @@
       "expected_first_review_provisional": true,
       "critical_negative": false,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "first_review"
     },
     {
       "id": "direct_management-2",
@@ -21,7 +22,8 @@
       "expected_first_review_provisional": true,
       "critical_negative": false,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "first_review"
     },
     {
       "id": "controlling_executive-1",
@@ -31,7 +33,8 @@
       "expected_first_review_provisional": true,
       "critical_negative": false,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "first_review"
     },
     {
       "id": "controlling_executive-2",
@@ -41,7 +44,8 @@
       "expected_first_review_provisional": true,
       "critical_negative": false,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "first_review"
     },
     {
       "id": "general_partner-1",
@@ -51,7 +55,8 @@
       "expected_first_review_provisional": true,
       "critical_negative": false,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "first_review"
     },
     {
       "id": "general_partner-2",
@@ -61,7 +66,8 @@
       "expected_first_review_provisional": true,
       "critical_negative": false,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "first_review"
     },
     {
       "id": "counterparty_ceo-1",
@@ -71,7 +77,8 @@
       "expected_first_review_provisional": true,
       "critical_negative": false,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "first_review"
     },
     {
       "id": "counterparty_ceo-2",
@@ -81,7 +88,8 @@
       "expected_first_review_provisional": true,
       "critical_negative": false,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "first_review"
     },
     {
       "id": "employment-1",
@@ -91,7 +99,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "employment-2",
@@ -101,7 +110,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "compensation-1",
@@ -111,7 +121,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "compensation-2",
@@ -121,7 +132,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "consulting-1",
@@ -131,7 +143,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "consulting-2",
@@ -141,7 +154,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "director_contract-1",
@@ -151,7 +165,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "director_contract-2",
@@ -161,7 +176,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "passive_ownership-1",
@@ -171,7 +187,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "passive_ownership-2",
@@ -181,7 +198,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "subsidiary-1",
@@ -191,7 +209,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "subsidiary-2",
@@ -201,7 +220,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "negated_role-1",
@@ -211,7 +231,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "negated_role-2",
@@ -221,7 +242,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "not_reporting_executive-1",
@@ -231,7 +253,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "unassessed"
     },
     {
       "id": "not_reporting_executive-2",
@@ -241,7 +264,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "unassessed"
     },
     {
       "id": "different_counterparty-1",
@@ -251,7 +275,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "different_counterparty-2",
@@ -261,7 +286,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "similar_names-1",
@@ -271,7 +297,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "similar_names-2",
@@ -281,7 +308,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "role_without_transaction-1",
@@ -291,7 +319,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "role_without_transaction-2",
@@ -301,7 +330,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "proposal_only-1",
@@ -311,7 +341,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "proposal_only-2",
@@ -321,7 +352,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "fair_value_only-1",
@@ -331,7 +363,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "further_review"
     },
     {
       "id": "fair_value_only-2",
@@ -341,7 +374,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "further_review"
     },
     {
       "id": "controls_do_not_erase_link-1",
@@ -351,7 +385,8 @@
       "expected_first_review_provisional": true,
       "critical_negative": false,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "first_review"
     },
     {
       "id": "controls_do_not_erase_link-2",
@@ -361,7 +396,8 @@
       "expected_first_review_provisional": true,
       "critical_negative": false,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "first_review"
     },
     {
       "id": "negated_transaction-1",
@@ -371,7 +407,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "negated_transaction-2",
@@ -381,7 +418,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "context"
     },
     {
       "id": "ambiguous_identity-1",
@@ -391,7 +429,8 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
-      "reviewer_b": null
+      "reviewer_b": null,
+      "expected_priority_provisional": "unassessed"
     },
     {
       "id": "ambiguous_identity-2",
@@ -401,7 +440,99 @@
       "expected_first_review_provisional": false,
       "critical_negative": true,
       "reviewer_a": null,
+      "reviewer_b": null,
+      "expected_priority_provisional": "unassessed"
+    },
+    {
+      "id": "controlled_consulting-1",
+      "family": "controlled_consulting",
+      "split": "dev",
+      "text": "Morgan, the chief financial officer of Fictional Reporter plc, owns and manages Advice Ltd. Fictional Reporter plc paid Advice Ltd $10 million under a consulting services agreement during 1999.",
+      "expected_first_review_provisional": true,
+      "expected_priority_provisional": "first_review",
+      "critical_negative": false,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "controlled_consulting-2",
+      "family": "controlled_consulting",
+      "split": "dev",
+      "text": "Invented annual disclosure. Morgan, the chief financial officer of Fictional Reporter plc, owns and manages Advice Ltd. Fictional Reporter plc paid Advice Ltd $10 million under a consulting services agreement during 1999.",
+      "expected_first_review_provisional": true,
+      "expected_priority_provisional": "first_review",
+      "critical_negative": false,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "internal_transfer-1",
+      "family": "internal_transfer",
+      "split": "test",
+      "text": "Unit Ltd is a wholly owned subsidiary consolidated with Fictional Reporter plc. Unit Ltd transferred its wholesale business to another segment of Fictional Reporter plc. No separate officer interest is described.",
+      "expected_first_review_provisional": false,
+      "expected_priority_provisional": "context",
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "internal_transfer-2",
+      "family": "internal_transfer",
+      "split": "test",
+      "text": "Invented annual disclosure. Unit Ltd is a wholly owned subsidiary consolidated with Fictional Reporter plc. Unit Ltd transferred its wholesale business to another segment of Fictional Reporter plc. No separate officer interest is described.",
+      "expected_first_review_provisional": false,
+      "expected_priority_provisional": "context",
+      "critical_negative": true,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "multiple_transactions-1",
+      "family": "multiple_transactions",
+      "split": "dev",
+      "text": "Morgan, an officer of Fictional Reporter plc, controls Buyer Ltd. Fictional Reporter plc sold an asset to Buyer Ltd in June 1999. Fictional Reporter plc also made a separate loan to Buyer Ltd in December 1999; no terms are stated for the loan.",
+      "expected_first_review_provisional": false,
+      "expected_priority_provisional": "unassessed",
+      "critical_negative": false,
+      "reviewer_a": null,
+      "reviewer_b": null,
+      "expected_end_to_end_priority_provisional": "first_review"
+    },
+    {
+      "id": "multiple_transactions-2",
+      "family": "multiple_transactions",
+      "split": "dev",
+      "text": "Invented annual disclosure. Morgan, an officer of Fictional Reporter plc, controls Buyer Ltd. Fictional Reporter plc sold an asset to Buyer Ltd in June 1999. Fictional Reporter plc also made a separate loan to Buyer Ltd in December 1999; no terms are stated for the loan.",
+      "expected_first_review_provisional": false,
+      "expected_priority_provisional": "unassessed",
+      "critical_negative": false,
+      "reviewer_a": null,
+      "reviewer_b": null,
+      "expected_end_to_end_priority_provisional": "first_review"
+    },
+    {
+      "id": "denied_control-1",
+      "family": "denied_control",
+      "split": "test",
+      "text": "Morgan, an officer of Fictional Reporter plc, controls Buyer Ltd. Fictional Reporter plc sold an investment to Buyer Ltd in 1999. There was no independent valuation or audit committee review of this transaction.",
+      "expected_first_review_provisional": true,
+      "expected_priority_provisional": "first_review",
+      "critical_negative": false,
+      "reviewer_a": null,
+      "reviewer_b": null
+    },
+    {
+      "id": "denied_control-2",
+      "family": "denied_control",
+      "split": "test",
+      "text": "Invented annual disclosure. Morgan, an officer of Fictional Reporter plc, controls Buyer Ltd. Fictional Reporter plc sold an investment to Buyer Ltd in 1999. There was no independent valuation or audit committee review of this transaction.",
+      "expected_first_review_provisional": true,
+      "expected_priority_provisional": "first_review",
+      "critical_negative": false,
+      "reviewer_a": null,
       "reviewer_b": null
     }
-  ]
+  ],
+  "split_status": "regression_sets_previously_inspected_not_new_holdout"
 }

@@ -23,8 +23,20 @@ def calculate(facts: list[Fact]) -> tuple[list[Metric], list[Finding], list[str]
 
     def ratio(name: str, label: str, numerator: str, denominator: str, year: int) -> Metric | None:
         a, b = lookup.get((numerator, year)), lookup.get((denominator, year))
-        if not a or not b or a.unit == "unknown" or a.unit != b.unit or b.value <= 0:
+        if not a or not b or a.unit == "unknown" or a.unit != b.unit:
             missing.append(f"{year}: {label} için kullanılabilir/payda-pozitif veri yok.")
+            return None
+        if b.value <= 0:
+            findings.append(
+                Finding(
+                    id=f"{name}_not_meaningful_{year}",
+                    category="financial",
+                    status="context",
+                    title=f"{year}: {label} hesaplanmadı",
+                    explanation=f"{denominator} mevcut ve değeri {b.value * b.scale}; pozitif payda gerektiren oran yorumlanmadı. Bu veri eksikliği değildir.",
+                    fact_ids=[a.id, b.id],
+                )
+            )
             return None
         metric = Metric(
             id=f"{name}_{year}",
@@ -51,6 +63,18 @@ def calculate(facts: list[Fact]) -> tuple[list[Metric], list[Finding], list[str]
         )
 
     for year in periods:
+        equity_fact = lookup.get(("equity", year))
+        if equity_fact and equity_fact.unit != "unknown" and equity_fact.value < 0:
+            findings.append(
+                Finding(
+                    id=f"negative_equity_{year}",
+                    category="financial",
+                    status="signal",
+                    title=f"{year}: negatif özkaynak",
+                    explanation="Raporlanan özkaynak negatif. Sermaye yapısı ve yükümlülükler incelenmeli; bu tek başına hile veya çöküş tahmini değildir.",
+                    fact_ids=[equity_fact.id],
+                )
+            )
         current = ratio("current_ratio", "Cari oran", "current_assets", "current_liabilities", year)
         if current:
             add(

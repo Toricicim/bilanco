@@ -17,7 +17,6 @@ from bilanco.acquisition import (
     submissions_proof,
 )
 from bilanco.config import AS_OF, FILING_URL, INDEX_URL, MIRROR_URLS, SUBMISSIONS_URL
-from bilanco.documents import archive_identity_ok, read_document
 
 
 @pytest.mark.parametrize(
@@ -160,7 +159,7 @@ def test_compressed_payload_still_obeys_decoded_size_limit(settings, memory_stor
             )
 
 
-def test_archive_fallback_needs_official_publication_proof(settings, memory_store):
+def test_original_filing_date_does_not_verify_mirror_version(settings, memory_store):
     stream = io.BytesIO()
     canvas = Canvas(stream)
     canvas.drawString(30, 750, "Enron 1999 Annual Report — SYNTHETIC TEST ONLY")
@@ -177,14 +176,11 @@ def test_archive_fallback_needs_official_publication_proof(settings, memory_stor
             return httpx.Response(200, content=stream.getvalue())
         return httpx.Response(403)
 
+    problems = []
     with httpx.Client(transport=httpx.MockTransport(handler)) as client:
-        result = acquire_annual(Acquirer(settings, memory_store, client=client), AS_OF, [])
-    assert result is not None
-    source, content = result
-    assert source.provenance == "archive_copy"
-    assert source.publication_date.isoformat() == "2000-03-30"
-    blocks, _ = read_document(source, content)
-    assert archive_identity_ok(blocks)
+        result = acquire_annual(Acquirer(settings, memory_store, client=client), AS_OF, problems)
+    assert result is None
+    assert any("archive_version_unverified" in p for p in problems)
 
 
 def test_unknown_publication_does_not_even_download_mirrors(settings, memory_store):

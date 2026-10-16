@@ -195,6 +195,21 @@ def main(argv: list[str] | None = None) -> int:
                 progress=lambda stage: print(f"[bilanco] {stage}", file=sys.stderr),
             )
             directory = settings.data_dir / "runs" / result.run_id
+            if result.ai.get("cancelled"):
+                print(
+                    json.dumps(
+                        {
+                            "run_id": result.run_id,
+                            "status": result.status,
+                            "cancelled": True,
+                            "analysis": str(directory / "analysis.json"),
+                            "report": str(directory / "report.md"),
+                        },
+                        ensure_ascii=False,
+                        indent=2,
+                    )
+                )
+                return 130
             assessment_output = None
             assessment_incomplete = False
             if result.status != "failed" and result.sources:

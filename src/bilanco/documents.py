@@ -117,7 +117,7 @@ def archive_identity_ok(blocks: list[Block]) -> bool:
         bool(re.search(r"\benron\b", text))
         and bool(re.search(r"1999.{0,60}annual report|annual report.{0,60}1999", text))
         and "consolidated" in text
-        and not re.search(r"(?:form 10-k/a|1999.{0,25}(?:restated|amended) annual report)", text)
+        and not re.search(r"form 10-k/a|\brestat(?:ed|ement)\b|\bamended\b", text)
     )
 
 
@@ -253,6 +253,19 @@ def extract_facts(blocks: list[Block], as_of: date) -> tuple[list[Fact], list[di
                         rejected.append(
                             {
                                 "reason": "amount_missing_or_invalid",
+                                "concept": concept,
+                                "period": year,
+                                "block_id": block.id,
+                                "row": line,
+                            }
+                        )
+                        continue
+                    if concept == "operating_cash_flow" and "used in" in lower and value > 0:
+                        # Positive magnitude + outflow label: sign is not established.
+                        # Never turn this into positive cash generation or invent a sign.
+                        rejected.append(
+                            {
+                                "reason": "cash_flow_sign_ambiguous",
                                 "concept": concept,
                                 "period": year,
                                 "block_id": block.id,

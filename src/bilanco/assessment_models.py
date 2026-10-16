@@ -21,8 +21,15 @@ class RelationDraft(Model):
     counterparty: str
     executive: str
     kind: Literal[
-        "employment", "ownership", "related_transaction", "executive_relationship", "unresolved"
+        "employment",
+        "ownership",
+        "related_transaction",
+        "executive_relationship",
+        "intragroup_transfer",
+        "unresolved",
     ]
+    # Missing in legacy snapshots; new evaluations must explicitly scope a transaction.
+    transaction_scope: Literal["single", "multiple", "unknown"] = "unknown"
     classification_evidence: list[Locator] = Field(default_factory=list)
     executive_link: EvidenceCheck
     transaction: EvidenceCheck
@@ -56,8 +63,8 @@ class ReviewCase(Model):
 
 
 class Assessment(Model):
-    schema_version: Literal["1.0"] = "1.0"
-    rule_version: Literal["related-party-1"] = "related-party-1"
+    schema_version: Literal["1.0", "1.1"] = "1.1"
+    rule_version: Literal["related-party-1", "related-party-2"] = "related-party-2"
     id: str
     source_run_id: str
     source_analysis_sha256: str

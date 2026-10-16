@@ -41,19 +41,20 @@ def case(expected=False):
     return {
         "id": "one",
         "expected_first_review_provisional": expected,
+        "expected_priority_provisional": "first_review" if expected else "context",
         "critical_negative": not expected,
         "reviewer_a": None,
         "reviewer_b": None,
     }
 
 
-def test_corpus_has_40_cases_disjoint_families_and_explicit_review_states():
+def test_corpus_has_48_cases_disjoint_families_and_explicit_review_states():
     rows = json.loads(CORPUS.read_text())["cases"]
-    assert len(rows) == 40
-    assert len({r["id"] for r in rows}) == 40
+    assert len(rows) == 48
+    assert len({r["id"] for r in rows}) == 48
     dev = [r for r in rows if r["split"] == "dev"]
     test = [r for r in rows if r["split"] == "test"]
-    assert len(dev) == len(test) == 20
+    assert len(dev) == len(test) == 24
     assert not {r["family"] for r in dev} & {r["family"] for r in test}
     for row in rows:
         for name in ("reviewer_a", "reviewer_b"):

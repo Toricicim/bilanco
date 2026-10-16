@@ -12,7 +12,6 @@ from .config import (
     CIK,
     FILING_URL,
     INDEX_URL,
-    MIRROR_URLS,
     PERIOD,
     SUBMISSIONS_URL,
     Settings,
@@ -354,12 +353,9 @@ def acquire_annual(
     if proof is None:
         problems.append("Yayın tarihi doğrulanamadığı için arşiv PDF'leri analize alınmadı.")
         return None
-    for url in MIRROR_URLS:
-        try:
-            download = acquirer.get(url)
-            if not download.content.startswith(b"%PDF-"):
-                raise AcquisitionError("Arşiv kopyası PDF değil.")
-            return make_source(download, proof, "archive_copy"), download.content
-        except AcquisitionError as exc:
-            problems.append(f"Arşiv kopyası: {exc}")
+    # SEC metadata dates the original filing, not the bytes of a PDF mirror.
+    # No verified historical snapshot mechanism is implemented: fail closed.
+    problems.append(
+        "Arşiv kopyasının tarihsel sürümü kanıtlanmadı (archive_version_unverified); analize alınmadı."
+    )
     return None

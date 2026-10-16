@@ -14,11 +14,11 @@ Kayıtlı çalışmadan yeni inceleme öncelikleri üretmek için:
 uv run bilanco assess --run-id 88f8d197-9734-480e-9b46-3d374d963b1b
 ```
 
-Bu komut belge indirmeden ek Codex değerlendirmesi yapar; kaynak çalışma mevcut veritabanında kayıtlı olmalıdır. Yeni `analyze` çalışmalarında bu adım otomatik çalışır. Ayrı JSON/Markdown raporu üretir; eski sonuçları değiştirmez. [Kurallar, bütçe ve sınırlar](docs/assessment.md) · [40 yapay karşı örnek](evaluation/README.md).
+Bu komut belge indirmeden ek Codex değerlendirmesi yapar; kaynak çalışma mevcut veritabanında kayıtlı olmalıdır. Yeni `analyze` çalışmalarında bu adım otomatik çalışır. Ayrı JSON/Markdown raporu üretir; eski sonuçları değiştirmez. [Kurallar, bütçe ve sınırlar](docs/assessment.md) · [48 yapay regresyon örneği](evaluation/README.md).
 
 ```text
 analyze komutu
-  → çalışma sırasında SEC kaynağı / tarihli arşiv kopyası
+  → çalışma sırasında özgün SEC kaynağı (sürümü doğrulanmamış arşiv hariç)
   → metin, tablo, konum ve yayın tarihi kontrolleri
   → Python ile sayısal çıkarım ve hesaplar
   → gerektiğinde ayrı Codex çalışması ile kaynak keşfi
@@ -109,7 +109,7 @@ Bu komut bir gerçek model çağrısı kullanır, finansal belge toplamaz. Codex
 
 - İlk yıllık rapor: özgün FY1999 10-K, şirket CIK `0001024401`, accession `0001024401-00-000002`. Bunlar kaynak kimlikleridir; finansal tutarlar kodda bulunmaz.
 - Yayın tarihi dosya adı, PDF oluşturulma tarihi, rapor yılı veya indirme zamanından çıkarılmaz. SEC SGML başlığı, SEC indeks kaydı veya SEC submissions metadatası gerekir. Kesimden sonraki dosyalama ve 10-K/A sürümleri yıllık kaynak olarak reddedilir.
-- SEC engellenirse erişim kontrolü veya TLS aşılmaz. Arşiv PDF'si için SEC yayın kanıtı ve metin içinden şirket/yıl/sürüm uyumu gerekir. Bu, özgün SEC dosyasıyla byte eşitliği değildir; arşivli çalışma kısmi olarak işaretlenir. Bu sınırlama JSON ve raporda görünür.
+- SEC engellenirse erişim kontrolü veya TLS aşılmaz. Başka arşivdeki PDF'nin aynı tarihsel sürüm olduğu ayrıca kanıtlanamadığından bu sürümde analize alınmaz. Eski SEC metadata tarihi tek başına kopyayı doğrulamaz; eksik kaynak başarısız/kısmi kapsam olarak görünür.
 - Ek resmî kaynaklar şu anda aynı CIK'e ait, tarihi doğrulanabilen SEC SGML 8-K/10-Q dosyalarıdır. Rastgele haber sitesi, yönetici sosyal medya hesabı veya her türlü web sayfası destekleniyor iddiası yoktur.
 - Tablo okuyucu metinli, satır/sütun ilişkisi açık PDF/HTML/SEC metni içindir. Belirsiz sütun, çelişkili tutar, bozuk sayı, eksik birim ve taranmış sayfa tahminle doldurulmaz. OCR ve karmaşık çok kolonlu tablolar için yeni okuyucular eklenebilir.
 - `value` basılı tutardır, `scale` çarpanıdır. Örneğin `"value":"200", "scale":1000000` gerçek şirket verisi değil, birim örneğidir. JSON'daki parasal değerler hassasiyet kaybını önlemek için metin olarak kodlanan ondalıklardır; PostgreSQL'de `numeric` sütununda saklanır. `$` bağlamı `dollars` olarak korunur; kendiliğinden ISO `USD` atanmaz. Tire basılı sıfır sayılmaz.
@@ -159,3 +159,10 @@ CI aynı testleri PostgreSQL 18 servisiyle çalıştırır. Üretim analizi CI'd
 > Yazı, şema doğrulamasından ayrı kaynak ve aritmetik kontrolleri öneriyor. Yorumlarda tekrar eden tutarların yanlış satırla eşleşebileceği vurgulanıyor. Bu nedenle blok/sayfa konumu saklanıyor; anlam doğruluğu ayrıca işaretleniyor. Yazı bir ürün de tanıtıyor; bağımsız Enron başarı deneyi değildir.
 >
 > 🔗 [Read Full Discussion](https://dev.to/michael_maurice/schema-valid-correct-4-checks-before-you-trust-llm-extraction-4n6f)
+
+
+## 2026-10-16 inceleme düzeltmeleri
+
+Yeni değerlendirmeler `related-party-2` kurallarını ve Assessment 1.1'i kullanır. [Düzeltme ve doğrulama kaydı](docs/review-fixes.md) · [Kurallar ve sınırlar](docs/assessment.md). Sürümü doğrulanmamış arşiv PDF'si finansal girdiye alınmaz; SEC özgün dosyası yoksa kapsam eksik kalır. İptalde kısmi kayıt korunur, yeni AI aşaması başlamaz (çıkış 130). Negatif özkaynak ayrıca görünür; belirsiz used-in nakit işareti olumlu yorumlanmaz.
+
+[Değerlendirme komutları](evaluation/README.md) dört öncelik sınıfını, gereksiz incelemeleri ve ham bloklardan ilk aday çıkarımındaki kaçırmaları ölçebilir. 48 pasaj yapay regresyon setidir; insan etiketleri henüz tamamlanmadı. Önceki Enron HTML/JSON dosyaları **related-party-1 tarihsel snapshot'ıdır**; bu kod düzeltmelerinin yeniden çalıştırılmış sonucu değildir.

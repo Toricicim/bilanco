@@ -36,6 +36,7 @@ def draft(**changes):
         counterparty="Counterparty A",
         executive="Morgan",
         kind="related_transaction",
+        transaction_scope="single",
         executive_link=check("yes", ROLE),
         transaction=check("yes", TRADE),
         same_parties=check("yes", ROLE + "\n" + TRADE),

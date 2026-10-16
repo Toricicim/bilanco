@@ -47,8 +47,9 @@ ANSWER_LABELS = {
     "conflicting": "Çelişkili",
 }
 REQUEST = """Assess ONLY these finding IDs against the supplied source blocks. Return cases,
-covering every supplied finding ID exactly once. Combine findings only when they describe the
-same relationship/transaction. Do not rank risk, predict fraud, use later events, or invent names,
+covering every supplied finding ID exactly once. Return ONE case per finding ID; never combine
+findings in the model response. Python deduplicates identical transaction spans later.
+Do not rank risk, predict fraud, use later events, or invent names,
 amounts, dates, independent checks, or aliases. No external search.
 For each case answer these atomic questions with yes/no/unknown/conflicting and VERBATIM quotes:
 executive_link: does an officer of the reporting company have an executive, controlling,
@@ -66,7 +67,16 @@ For controls distinguish management_assertion from reported_independent. Reporti
 not proof it operated. An arm's-length assertion, clean audit opinion or 'fair value' alone is
 NOT independent verification of this transaction. Missing disclosure means unknown, never no.
 Every yes/no/conflicting answer needs a source quote; unknown may have empty evidence.
-kind is employment for routine employment/consulting/compensation exhibits, ownership for
+transaction_scope MUST be single for exactly one transaction, multiple if a finding bundles
+distinct transactions, unknown if unclear. Never pool controls/purpose/effects across transactions.
+Keep different transactions in separate cases with disjoint finding IDs. If one finding itself
+bundles several transactions, mark multiple rather than claiming all controls apply to all of them.
+For transaction=yes supply exactly ONE minimal transaction quote in transaction.evidence;
+other context belongs in classification_evidence or the relevant atomic check.
+kind is employment ONLY for the reporting company's ordinary contract with its own employee;
+a consulting contract with an officer-controlled separate firm is related_transaction, not employment.
+Use intragroup_transfer ONLY for an explicitly consolidated/wholly-owned internal segment transfer
+with no separately supported executive counterparty interest. Other kinds are ownership for
 ownership alone, related_transaction for a related transaction, executive_relationship for
 role alone, or unresolved. Copy a classification passage in classification_evidence EVEN IF
 all six atomic checks are unknown (e.g. a passive ownership disclosure). This passage also
@@ -114,6 +124,7 @@ def make_packages(analysis: Analysis, max_chars: int) -> tuple[list[dict], list[
             if (
                 not block
                 or not source
+                or source.provenance == "archive_copy"
                 or source.publication_date > analysis.as_of
                 or not normalize(ref.quote)
                 or normalize(ref.quote) not in normalize(block.text)
@@ -211,29 +222,53 @@ def _same_reporter(name: str, reporter: str) -> bool:
 def classify(draft: RelationDraft) -> tuple[str, str, str]:
     """Named deterministic rules; no votes, weights, severity score or company names."""
     primary = (draft.executive_link, draft.transaction, draft.same_parties)
-    transaction_text = " ".join(r.quote for r in draft.transaction.evidence)
-    routine_contract = re.search(
+    transaction_text = " ".join(
+        normalize(r.quote) for r in draft.transaction.evidence + draft.classification_evidence
+    )
+    contract_words = re.search(
         r"\b(?:employment|consulting services|executive employment) agreement\b",
         transaction_text,
         re.I,
     )
-    if draft.kind == "employment" or routine_contract:
+    # Only a contract with the officer personally is a routine job contract.
+    # The same words in a payment to an officer-controlled company are NOT an exemption.
+    personal_contract = (
+        bool(draft.executive)
+        and normalize(draft.counterparty).casefold() == normalize(draft.executive).casefold()
+    )
+    if (contract_words and personal_contract) or (
+        draft.kind == "employment" and draft.executive_link.answer != "yes"
+    ):
         return (
             "context",
             "routine_contract",
             "İş/ücret veya danışmanlık sözleşmesi tek başına karşı tarafta yönetim bağlantısını göstermez.",
         )
-    if draft.kind == "unresolved" or any(c.answer == "conflicting" for c in primary):
+    if draft.kind in {"unresolved", "employment"} or any(
+        c.answer == "conflicting" for c in primary
+    ):
         return (
             "unassessed",
             "unresolved_relation",
             "Taraf/rol/işlem bağlantısı belirsiz veya çelişkili; öncelik belirlenemedi.",
+        )
+    if draft.transaction.answer == "yes" and draft.transaction_scope != "single":
+        return (
+            "unassessed",
+            "transaction_scope_unclear",
+            "Birden fazla işlem veya belirsiz işlem kapsamı var; kontroller/etkiler işlem bazında ayrıştırılmalı.",
         )
     if all(c.answer == "yes" for c in primary):
         return (
             "first_review",
             "executive_linked_transaction",
             "Yönetici bağlantısı ile aynı karşı tarafla yapılan işlem birlikte kaynaklandırıldı. İşlem koşullarının bağımsızlığı ve açıklanan kontroller incelenmeli.",
+        )
+    if draft.kind == "intragroup_transfer":
+        return (
+            "context",
+            "intragroup_transfer",
+            "Grup içi/segment aktarımı açıklaması; ayrı yönetici menfaati bu değerlendirmede desteklenmedi. Bu sınıflandırma işlemin normal veya güvenli olduğunun teyidi değildir.",
         )
     if draft.transaction.answer == "yes" and draft.kind == "related_transaction":
         return (
@@ -305,6 +340,51 @@ def validate_review(review: RelationReview, packet: dict) -> tuple[list[ReviewCa
             or not _contains(draft.executive, draft.executive_link.evidence)
         ):
             reason = "party_identity_not_grounded"
+        elif draft.kind == "intragroup_transfer" and not re.search(
+            r"wholly[- ]owned|intra[- ]group|intersegment|consolidated|\bsegment\b",
+            " ".join(normalize(r.quote) for r in draft.classification_evidence),
+            re.I,
+        ):
+            reason = "intragroup_classification_not_grounded"
+        elif draft.transaction.answer == "yes" and draft.transaction_scope != "single":
+            reason = "transaction_scope_not_single"
+        elif len(draft.finding_ids) != 1:
+            reason = "pooled_finding_ids"
+        elif (
+            draft.transaction.answer == "yes"
+            and len({(r.block_id, normalize(r.quote)) for r in draft.transaction.evidence}) != 1
+        ):
+            reason = "transaction_evidence_not_atomic"
+        elif draft.transaction.answer == "yes" and any(
+            len(
+                re.findall(
+                    r"\b(?:sold|loaned|lent|purchased|bought|transferred|paid|made a loan)\b",
+                    normalize(r.quote),
+                    re.I,
+                )
+            )
+            > 1
+            for r in draft.transaction.evidence
+        ):
+            reason = "multiple_transaction_actions"
+        elif draft.transaction.answer == "yes" and any(
+            re.search(
+                r"\bno\s+(?:(?:actual|such|completed)\s+)?transaction\b|\b(?:has|have|had)\s+never\s+(?:conducted|completed|made|entered|sold|purchased|transacted)\b|\b(?:proposes?|proposed|plans?|planned|intends?|intended)\s+to\b|\b(?:did|does|do|has|have|had|was|were|is|are)\s+not(?!\s+only\b)\s+(?:yet\s+)?(?:sell|sold|buy|bought|lend|lent|loan|pay|paid|purchase\w*|transfer\w*|transact\w*|occur\w*|complete\w*|conduct\w*)\b",
+                normalize(r.quote),
+                re.I,
+            )
+            for r in draft.transaction.evidence
+        ):
+            reason = "transaction_negated_or_proposed"
+        elif draft.control_basis == "reported_independent" and any(
+            re.search(
+                r"\b(?:no|not(?!\s+only\b)|never|without)\b[^.;]{0,70}\b(?:independent|valuation|audit committee|review)\b",
+                normalize(r.quote),
+                re.I,
+            )
+            for r in draft.controls.evidence
+        ):
+            reason = "independent_control_negated"
         elif draft.controls.answer == "unknown" and draft.control_basis != "not_found":
             reason = "control_basis_without_disclosure"
         elif draft.controls.answer == "yes" and draft.control_basis == "not_found":
@@ -317,7 +397,7 @@ def validate_review(review: RelationReview, packet: dict) -> tuple[list[ReviewCa
             reason = "independent_control_not_grounded"
         elif draft.executive_link.answer == "yes" and any(
             re.search(
-                r"\b(?:does|did|do|is|was|are|were)\s+not\b[^.;]{0,80}\b(?:manag\w*|control\w*|director|officer|own\w*)\b",
+                r"\b(?:(?:does|did|do|is|was|are|were|has|have)\s+not(?!\s+only\b)|has never|have never|never)\b[^.;]{0,80}\b(?:manag\w*|control\w*|director|officer|own\w*)\b",
                 normalize(r.quote),
                 re.I,
             )
@@ -334,6 +414,8 @@ def validate_review(review: RelationReview, packet: dict) -> tuple[list[ReviewCa
             for k in CHECKS
             if getattr(draft, k).answer in {"unknown", "conflicting"}
         ]
+        if rule == "transaction_scope_unclear":
+            unknowns.append("İşlem bazında kanıt/kontrol kapsamı")
         accepted.append(
             ReviewCase(
                 id="relation_" + fid,
@@ -424,7 +506,8 @@ def _merge_and_sort(cases: list[ReviewCase], analysis: Analysis) -> list[ReviewC
                 normalize(d.company_name).casefold(),
                 normalize(d.counterparty).casefold(),
                 normalize(d.executive).casefold(),
-                tuple(sorted({r.block_id for r in d.transaction.evidence})),
+                # One source block can contain many different transactions.
+                tuple(sorted({(r.block_id, normalize(r.quote)) for r in d.transaction.evidence})),
             )
         if key not in groups:
             groups[key] = case
@@ -498,6 +581,8 @@ def render_assessment(result: Assessment, analysis: Analysis) -> str:
         "",
         "## İlk inceleme konuları",
         "",
+        "Aşağıdakiler öncelik grubu ve kaynak sırasıyla seçilir; finansal önem veya tehlike sıralaması değildir.",
+        "",
     ]
     top = [c for c in result.cases if c.priority in {"first_review", "further_review"}][:3]
     lines.extend(
@@ -527,6 +612,9 @@ def render_assessment(result: Assessment, analysis: Analysis) -> str:
                 ]
             )
             if case.relation:
+                lines.append(
+                    f"- İşlem kapsamı: `{case.relation.transaction_scope}`; alt cevaplar yalnız bu işlemin kaynak pasajlarına aittir."
+                )
                 lines.extend(
                     f"- {CHECK_LABELS[k]}: {ANSWER_LABELS[getattr(case.relation, k).answer]}"
                     for k in CHECKS
@@ -624,6 +712,12 @@ def run_assessment(
     try:
         if not analysis.sources or analysis.status == "failed":
             raise ValueError("Kullanılabilir kaynak analizi yok.")
+        if any(s.provenance == "archive_copy" for s in analysis.sources):
+            result.cases = []
+            result.limitations.append(
+                "Kaynak analizin arşiv sürümü doğrulanmamış; sayılar ve ilişkiler yeni tarihsel değerlendirmeye alınmadı."
+            )
+            raise ValueError("Doğrulanmamış tarihsel arşiv sürümü.")
         packages, omitted = make_packages(analysis, settings.chunk_chars)
         total = len(packages)
         for index, packet in enumerate(packages, 1):

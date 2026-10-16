@@ -24,7 +24,7 @@ Güncelleme: 2026-10-16. Grafik/HTML/HTTP API/daemon analiz hattının parçası
 
 1. `Settings.load()` yalnız mevcut dizinin `.env` dosyasını okur.
 2. `analyze` şirket/tarihi/SEC iletişim alanını kontrol eder. Şema hazırlanır, benzersiz çalışma başlar.
-3. Özgün SEC raporu çalışma sırasında alınır; gerekirse SEC yayın kanıtıyla ilişkilendirilmiş arşiv PDF'si denenir. Keşif ayrı bir yeni Codex çağrısıdır. Modelin sunduğu URL tekrar indirilir ve kodla tarih/kimlik kontrolünden geçer.
+3. Özgün SEC raporu çalışma sırasında alınır; sürümü ayrıca kanıtlanamayan arşiv PDF'leri katı tarihsel analize alınmaz. Keşif ayrı bir yeni Codex çağrısıdır. Modelin sunduğu URL tekrar indirilir ve kodla tarih/kimlik kontrolünden geçer.
 4. Kabul edilen belgelerden bütün metin blokları okunur. Ana finansal tablolardaki tutarlar programatik çıkarılır. Notlar sayısal tablo satırı gibi ele alınmaz.
 5. Okunabilen bütün bloklar boyut sınırlı paketlerle AI aday çıkarımına gider. Paket sayısı ve incelenen paket sayısı kaydedilir. Çağrı bütçesi veya hata yüzünden eksik kalan paketler açıkça görünür.
 6. Sayısal bulgularla AI inceleme adayları ayrı statülerde birleştirilir; anlatıcı yalnız kimlikleri sıralar. Eksik sıralanan kimlikler kaybolmaz.
@@ -56,9 +56,12 @@ Gelecekte doğrulanmış eğitim/etiketli değerlendirme seti oluşturulmadan bu
 ## Hata ve tekrar çalıştırma
 
 - İndirmede HTTP 429/uygun 5xx en fazla üç deneme; 403 engeli aşılmaz. Yönlendirmede de alan adı kontrolü uygulanır. Sıkıştırması açılmış içerik için boyut sınırı vardır.
-- Tarihi belirsiz kaynak hesap girdisi olmaz. PDF arşiv eşdeğerliği tam doğrulanamıyorsa çalışma kısmi kalır.
+- Tarihi belirsiz kaynak hesap girdisi olmaz. PDF arşiv sürümü kanıtlanamıyorsa kopya analiz dışında tutulur; eski metadata tarihine dayanarak içeriği kabul edilmez.
 - Model hatası sayısal sonuçları silmez. Bilinmeyen şema/araç olayı yanıtı reddettirir; sonsuz AI düzeltme döngüsü yoktur.
 - Kesilmiş süreçte sağlam indirmeler saklanır. Yeni analiz yeni çalışma kimliğiyle başlar; önceki incomplete çıktı başarı diye yeniden etiketlenmez.
 - Tamamlanmamış çalışmada önbellek veri toplama hatalarını azaltır; önceki AI çağrılarının kaldığı yerden otomatik sürdürülmesi bu sürümde yoktur.
 - Çalışma süreleri hız darboğazını ölçmek içindir. Rust'a geçiş veya eşzamanlı çoklu worker eklemek ölçüm sonrasına bırakılmıştır.
 - `document_reading` ve `http_requests` alt ölçümlerdir; ana aşamalarla örtüştükleri için bütün süre alanları toplanarak toplam süre bulunmaz.
+
+
+2026-10-16 düzeltmeleri: işlem kapsamı/koruma kuralları related-party-2; dört sınıf ve ham bloktan çıkarım deneyleri evaluation/README.md içinde. İptal ana analizden sonra yeni değerlendirme başlatmaz. Tarihi kanıtlanan özgün dosya yerine arşiv sürümünün otomatik kabulü kaldırıldı.

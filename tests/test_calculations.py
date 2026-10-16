@@ -22,9 +22,10 @@ def test_profit_cash_divergence_is_not_negative_cash_claim(source):
 def test_zero_denominator_is_not_divided_or_replaced(source):
     blocks, _ = read_document(source, synthetic_filing(profit="0"))
     facts, _ = extract_facts(blocks, AS_OF)
-    metrics, _, missing = calculate(facts)
+    metrics, findings, missing = calculate(facts)
     assert not any(m.id == "cash_profit_1999" for m in metrics)
-    assert missing
+    assert not missing
+    assert any(f.id == "cash_profit_not_meaningful_1999" for f in findings)
 
 
 def test_inconsistent_balance_is_not_repaired_to_fit(source):
