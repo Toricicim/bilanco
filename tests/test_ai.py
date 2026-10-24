@@ -4,8 +4,51 @@ from dataclasses import replace
 
 import pytest
 
-from bilanco.ai import AIError, Codex, inspect_event, validate_candidates, validate_order
+from bilanco.ai import (
+    AIError,
+    Codex,
+    inspect_event,
+    output_schema,
+    validate_candidates,
+    validate_order,
+)
 from bilanco.models import Block, Candidate, Discovery, Finding, Narrative, NarrativeItem
+
+
+@pytest.mark.parametrize("kind", ["error", "turn.failed"])
+def test_top_level_errors_keep_actionable_detail_without_credentials(kind):
+    detail = "Invalid schema: missing required field; https://example.invalid/?secret=hidden Bearer sess-TEST123 api_key=sk-TEST456"
+    event = {"type": kind, "error": {"message": detail}}
+    with pytest.raises(AIError) as found:
+        inspect_event(event, False)
+    message = str(found.value)
+    assert "Invalid schema" in message and "missing required field" in message
+    assert "TEST123" not in message and "TEST456" not in message and "secret=hidden" not in message
+
+
+def test_extended_extraction_wire_schema_is_strict_recursively_without_changing_domain():
+    from bilanco.equity_models import TextExtraction
+
+    original = TextExtraction.model_json_schema()
+    wire = output_schema(TextExtraction)
+
+    def check(value):
+        if isinstance(value, list):
+            for item in value:
+                check(item)
+        if isinstance(value, dict):
+            assert "default" not in value
+            if "properties" in value:
+                assert set(value["required"]) == set(value["properties"])
+                assert value["additionalProperties"] is False
+            for item in value.values():
+                check(item)
+
+    check(wire)
+    assert "observations" in wire["required"]
+    assert TextExtraction.model_json_schema() == original
+    assert TextExtraction(claims=[], forecasts=[], holdings=[]).document_facts == []
+    assert {"type": "null"} in wire["$defs"]["DocumentFact"]["properties"]["value_text"]["anyOf"]
 
 
 @pytest.fixture

@@ -24,6 +24,15 @@ STUDIES = {
         "Fonların TEFAS işlemlerinin kapatılması; şirket iflası etiketi değil",
     ),
 }
+STUDY_COMPANIES = dict.fromkeys(STUDIES, frozenset({"ozatd", "hatsn"}))
+
+
+def validate_study(company_id, study):
+    if study not in STUDIES or company_id not in STUDY_COMPANIES[study]:
+        raise ValueError(
+            f"Bu replay çalışması {company_id.upper()} için tanımlı değil. Olay/kesim protokolü "
+            f"seçilene kadar analyze --company {company_id} --as-of YYYY-MM-DD kullanın."
+        )
 
 
 def snapshot_dates(study):
@@ -53,6 +62,7 @@ def run_replay(
     codex_factory=None,
     offline=False,
 ):
+    validate_study(company_id, study)
     dates = snapshot_dates(study)
     replay_id = str(uuid.uuid4())
     directory = settings.data_dir / "replays" / replay_id
@@ -147,7 +157,7 @@ def run_replay(
         "limitations": [
             "İlk uyarı ay sonu taramasında gözlenen tarihtir; kesin günlük ilk sinyal tarihi değildir.",
             "Referans olaylar geçmiş sonuç açıklamasıdır; AI girdisi veya eşik ayarlama hedefi değildir.",
-            "OZATD bilinen vaka olduğu için deney keşifseldir; piyasa geneli tahmin başarısı ölçülmedi.",
+            "Bilinen vaka ve karşılaştırma üzerindeki deney keşifseldir; piyasa geneli tahmin başarısı ölçülmedi.",
             "SPK tedbirinin yokluğu temiz şirket etiketi değildir. HATSN karşılaştırması da negatif gerçek etiket sayılmaz.",
         ],
     }

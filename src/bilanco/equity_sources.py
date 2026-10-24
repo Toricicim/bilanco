@@ -35,7 +35,7 @@ HOSTS = {"www.kap.org.tr", "kap.org.tr", "spk.gov.tr", "www.spk.gov.tr", "query1
 
 
 def fold(value: str) -> str:
-    value = value.translate(str.maketrans({"ı": "i", "İ": "I"}))
+    value = value.translate(str.maketrans({"ı": "i", "İ": "I", "’": "'", "‘": "'", "ʼ": "'"}))
     value = unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode().lower()
     return " ".join(re.sub(r"[^a-z0-9%.,]+", " ", value).split())
 
@@ -195,7 +195,7 @@ def accept_kap(
     cover_lines = [fold(line) for line in head.splitlines()[:12]]
     kind = "disclosure"
     if any(
-        re.fullmatch(r"(?:\d{2}\.\d{2}\.20\d{2} donemi )?finansal rapor", line)
+        re.fullmatch(r"(?:\d{2}\.\d{2}\.20\d{2} (?:donemi )?)?finansal rapor", line)
         for line in cover_lines
     ):
         kind = "financial"
@@ -218,6 +218,8 @@ def accept_kap(
         provenance="manual_kap" if manual else "kap_public",
         path=str(path.relative_to(settings.data_dir)),
         kind=kind,
+        entity_name=company.name,
+        entity_code=company.ticker,
         version_note=(
             "Manuel dosyanın özgün sunucudan indirildiği kriptografik olarak doğrulanamaz. "
             if manual
@@ -225,7 +227,7 @@ def accept_kap(
         )
         + "Kalıcı bildirim kimliği ve PDF yayın zamanı doğrulandı; sonradan değiştirilmemiş baytların bağımsız arşiv kanıtı yok.",
     )
-    return source, blocks, issues
+    return source, blocks, [f"{sid}: {issue}" for issue in issues]
 
 
 def accept_spk(
@@ -332,8 +334,10 @@ def accept_attachment(raw, entry, parent, company, settings, manual=False):
     sha = digest(raw)
     sid = f"kap-{parent.disclosure_id}-{oid}-{sha[:12]}"
     blocks, issues = document_blocks(raw, sid)
-    if company.identity not in fold(" ".join(b.text for b in blocks)[:10000]):
-        raise ValueError("Ek dosyada şirket kimliği eşleşmedi.")
+    if not blocks or sum(len(b.text.strip()) for b in blocks) < 20:
+        raise ValueError("attachment_text_unreadable: metin okunamadı; OCR gerekiyor.")
+    if company.identity not in fold(" ".join(b.text for b in blocks)):
+        raise ValueError("attachment_identity_unverified: Ek dosyada şirket kimliği eşleşmedi.")
     path = settings.data_dir / "raw" / sha
     atomic_write(path, raw)
     source = parent.model_copy(
@@ -349,7 +353,7 @@ def accept_attachment(raw, entry, parent, company, settings, manual=False):
             "version_note": parent.version_note + " Ek, aynı bildirim metadata kaydına bağlandı.",
         }
     )
-    return source, blocks, issues
+    return source, blocks, [f"{sid}: {issue}" for issue in issues]
 
 
 def read_market_csv(raw: bytes, symbol: str, url: str, basis: str, as_of: date) -> MarketSeries:
@@ -437,6 +441,34 @@ def yahoo_series(http: EquityHTTP, symbol: str, as_of: date) -> MarketSeries:
     )
 
 
+def resolve_member(client: EquityHTTP, company: Company) -> str:
+    """Resolve an issuer route without treating current metadata as historical evidence."""
+    if company.kap_member:
+        return company.kap_member
+    if company.identity_disclosure_id is None:
+        raise ValueError("KAP üye kimliği veya kimlik referansı eksik.")
+    payload = json.loads(
+        client.request(
+            f"{KAP}/tr/api/notification/attachment-detail/{company.identity_disclosure_id}"
+        )
+    )
+    if not isinstance(payload, list) or len(payload) != 1:
+        raise ValueError("KAP kimlik kaydı biçimi doğrulanamadı.")
+    try:
+        basic = payload[0]["disclosure"]["disclosureBasic"]
+        member = basic["mkkMemberOid"]
+        if (
+            int(basic["disclosureIndex"]) != company.identity_disclosure_id
+            or company.identity not in fold(basic["companyTitle"])
+            or company.ticker not in re.split(r"[^A-Z0-9]+", basic["stockCode"])
+            or not re.fullmatch(r"[0-9a-fA-F]{32}", member)
+        ):
+            raise ValueError("KAP şirket/üye kimliği eşleşmedi.")
+    except (KeyError, TypeError) as exc:
+        raise ValueError("KAP kimlik alanları okunamadı.") from exc
+    return member
+
+
 def acquire(
     settings: Settings,
     company: Company,
@@ -454,9 +486,11 @@ def acquire(
     client = http or EquityHTTP(settings, refresh)
     supplied_market = set()
 
-    def add(raw, index, manual=False):
+    def add(raw, index, manual=False, *, entity=company, role="issuer"):
         try:
-            source, blocks, issues = accept_kap(raw, index, company, as_of, settings, manual)
+            source, blocks, issues = accept_kap(raw, index, entity, as_of, settings, manual)
+            if role == "related_fund":
+                source = source.model_copy(update={"role": role, "kind": "fund_disclosure"})
             if source.sha256 not in {s.sha256 for s in result.sources}:
                 result.sources.append(source)
                 result.blocks.extend(blocks)
@@ -465,6 +499,33 @@ def acquire(
         except ValueError as exc:
             result.rejected.append({"disclosure_id": index, "reason": str(exc)})
             return None
+
+    def add_attachment(get_raw, entry, parent, manual=False, *, entity=company):
+        oid = str(entry.get("objId", ""))
+        try:
+            source, blocks, issues = accept_attachment(
+                get_raw(), entry, parent, entity, settings, manual
+            )
+            if parent.role == "related_fund":
+                source = source.model_copy(update={"kind": "fund_attachment"})
+            if source.sha256 not in {s.sha256 for s in result.sources}:
+                result.sources.append(source)
+                result.blocks.extend(blocks)
+                result.issues.extend(issues)
+        except (ValueError, KeyError, TypeError, httpx.HTTPError) as exc:
+            # A rejected exhibit must not skip the remaining siblings.
+            result.rejected.append(
+                {
+                    "stage": "attachment",
+                    "source_id": parent.id,
+                    "disclosure_id": parent.disclosure_id,
+                    "obj_id": oid,
+                    "reason": str(exc)[:300] if isinstance(exc, ValueError) else type(exc).__name__,
+                }
+            )
+            result.issues.append(
+                f"KAP {parent.disclosure_id} ek {oid} alınamadı ({type(exc).__name__})."
+            )
 
     try:
         if bundle:
@@ -491,17 +552,81 @@ def acquire(
                             raise ValueError(
                                 "Manuel ekin KAP metadata dosya adı/kimliği eşleşmedi."
                             )
-                        source, blocks, issues = accept_attachment(
-                            local_file(bundle, filename, settings.max_download_bytes),
+                        add_attachment(
+                            lambda filename=filename: local_file(
+                                bundle, filename, settings.max_download_bytes
+                            ),
                             by_id[oid],
                             parent,
-                            company,
-                            settings,
                             True,
                         )
-                        result.sources.append(source)
-                        result.blocks.extend(blocks)
-                        result.issues.extend(issues)
+            for entry in manifest.related_documents:
+                try:
+                    # A supplied routing entry is not evidence of a relationship.
+                    # Both fund code and exact name must occur in a primary source span.
+                    issuer_ids = {s.id for s in result.sources if s.role == "issuer"}
+                    if not any(
+                        b.source_id in issuer_ids
+                        and fold(entry.fund_name) in fold(b.text)
+                        and re.search(r"(?<!\w)" + re.escape(entry.fund_code) + r"(?!\w)", b.text)
+                        for b in result.blocks
+                    ):
+                        raise ValueError(
+                            "related_fund_link_unverified: fon kodu/adı şirket belgesinde birlikte doğrulanmadı."
+                        )
+                    entity = Company(
+                        id=entry.fund_code.lower(),
+                        name=entry.fund_name,
+                        identity=fold(entry.fund_name),
+                        ticker=entry.fund_code,
+                        listed_at=date(1900, 1, 1),
+                    )
+                    if offline and not entry.file:
+                        raise ValueError("related_fund_offline_file_required")
+                    raw = (
+                        local_file(bundle, entry.file, settings.max_download_bytes)
+                        if entry.file
+                        else client.request(f"{KAP}/tr/api/BildirimPdf/{entry.disclosure_id}")
+                    )
+                    parent = add(
+                        raw,
+                        entry.disclosure_id,
+                        bool(entry.file),
+                        entity=entity,
+                        role="related_fund",
+                    )
+                    if parent and entry.attachments:
+                        if not entry.detail_file:
+                            raise ValueError(
+                                "İlişkili fon eki için KAP attachment-detail kanıtı gerekli."
+                            )
+                        metadata = attachment_metadata(
+                            local_file(bundle, entry.detail_file, 2_000_000), parent, as_of
+                        )
+                        by_id = {str(a.get("objId")): a for a in metadata}
+                        for oid, filename in entry.attachments.items():
+                            if oid not in by_id or Path(filename).name != by_id[oid]["fileName"]:
+                                raise ValueError(
+                                    "İlişkili fon eki metadata kimliği/dosya adı eşleşmedi."
+                                )
+                            add_attachment(
+                                lambda filename=filename: local_file(
+                                    bundle, filename, settings.max_download_bytes
+                                ),
+                                by_id[oid],
+                                parent,
+                                True,
+                                entity=entity,
+                            )
+                except (ValueError, OSError, httpx.HTTPError) as exc:
+                    result.rejected.append(
+                        {
+                            "stage": "related_fund",
+                            "disclosure_id": entry.disclosure_id,
+                            "fund_code": entry.fund_code,
+                            "reason": str(exc)[:300],
+                        }
+                    )
             for entry in manifest.bulletins:
                 try:
                     source, blocks = accept_spk(
@@ -536,8 +661,16 @@ def acquire(
             # Website endpoint is experimental, not the licensed production REST API.
             ids = set()
             ordering = {}
-            start = date(company.listed_at.year, 1, 1)
+            start = max(
+                date(company.listed_at.year, 1, 1),
+                as_of - timedelta(days=company.catalog_lookback_days),
+            )
+            if start > date(company.listed_at.year, 1, 1):
+                result.issues.append(
+                    f"KAP katalog penceresi {start}–{as_of}; daha eski açıklamalar taranmadı."
+                )
             try:
+                member = resolve_member(client, company)
                 while start <= as_of:
                     end = min(start + timedelta(days=89), as_of)
                     progress(f"KAP katalog {start}–{end}")
@@ -547,7 +680,7 @@ def acquire(
                             {
                                 "fromDate": start.isoformat(),
                                 "toDate": end.isoformat(),
-                                "mkkMemberOidList": [company.kap_member],
+                                "mkkMemberOidList": [member],
                                 "subjectList": [],
                             },
                         )
@@ -610,19 +743,26 @@ def acquire(
                                     or str(entry.get("fileExtension", "")).lower() != "pdf"
                                 ):
                                     continue
-                                source, blocks, issues = accept_attachment(
-                                    client.request(f"{KAP}/tr/api/file/download/{oid}"),
+                                add_attachment(
+                                    lambda oid=oid: client.request(
+                                        f"{KAP}/tr/api/file/download/{oid}"
+                                    ),
                                     entry,
                                     parent,
-                                    company,
-                                    settings,
                                 )
-                                result.sources.append(source)
-                                result.blocks.extend(blocks)
-                                result.issues.extend(issues)
                         except (ValueError, KeyError, TypeError, httpx.HTTPError) as exc:
                             result.issues.append(
                                 f"KAP {index} ek kapsamı alınamadı ({type(exc).__name__})."
+                            )
+                            result.rejected.append(
+                                {
+                                    "stage": "attachment_metadata",
+                                    "source_id": parent.id,
+                                    "disclosure_id": index,
+                                    "reason": str(exc)[:300]
+                                    if isinstance(exc, ValueError)
+                                    else type(exc).__name__,
+                                }
                             )
                 except (ValueError, httpx.HTTPError) as exc:
                     result.rejected.append(

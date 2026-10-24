@@ -4,7 +4,10 @@ from datetime import timedelta
 from decimal import Decimal
 from statistics import mean
 
+from .equity_document_facts import analyze_documents, fact_id, financial_history
 from .equity_models import EquityAnalysis, Metric, ReviewFinding
+from .equity_observations import evaluate_observations
+from .equity_signals import evaluate_signal_observations, measure_investor_signals
 from .equity_sources import fold
 
 DOMAINS = ("financial", "operations", "relations", "audit", "market")
@@ -14,6 +17,15 @@ def evaluate(analysis: EquityAnalysis):
     metrics: list[Metric] = []
     findings: list[ReviewFinding] = []
     coverage = dict.fromkeys(DOMAINS, "unavailable")
+    analysis.document_fact_index = {
+        fact_id(obj): i for i, obj in enumerate(analysis.document_facts)
+    }
+    extra_metrics, extra_findings, analysis.comparisons, analysis.fund_exposures = (
+        analyze_documents(analysis)
+    )
+    analysis.financial_history = financial_history(analysis)
+    metrics.extend(extra_metrics)
+    findings.extend(extra_findings)
     block_sources = {b.id: b.source_id for b in analysis.blocks}
     source_map = {s.id: s for s in analysis.sources}
     financial = sorted(
@@ -27,7 +39,49 @@ def evaluate(analysis: EquityAnalysis):
         in fold(" ".join(b.text for b in analysis.blocks if b.source_id == s.id)[:7000])
     ]
     latest_audit = audited[-1] if audited else source
-    facts = [f for f in analysis.facts if source and f.source_id == source.id]
+    # Only one current disclosure, including its authenticated appendix. Never fill
+    # missing current data from an older report or mix differently restated periods.
+    sibling_ids = {
+        s.id
+        for s in analysis.sources
+        if source
+        and (
+            s.id == source.id
+            or source.disclosure_id is not None
+            and s.disclosure_id == source.disclosure_id
+            and s.kind == "financial_attachment"
+        )
+    }
+    grouped = {}
+    for fact in analysis.facts:
+        if fact.source_id in sibling_ids:
+            key = (
+                fact.concept,
+                fact.maturity,
+                fact.period_start,
+                fact.period_end,
+                fact.basis_date,
+                fact.scope,
+                fact.currency,
+                fact.measurement_basis,
+            )
+            grouped.setdefault(key, []).append(fact)
+    fact_conflict = any(len({f.value for f in group}) > 1 for group in grouped.values())
+    facts = [group[0] for group in grouped.values() if len({f.value for f in group}) == 1]
+
+    def concept_key(f):
+        return (
+            f"{f.maturity}_{f.concept}"
+            if f.concept
+            in {
+                "financial_investments",
+                "related_trade_receivables",
+                "related_other_receivables",
+                "contract_assets",
+            }
+            else f.concept
+        )
+
     end = max((f.period_end for f in facts), default=None)
     flows = [f for f in facts if f.period_start is not None and f.period_end == end]
     if flows:
@@ -35,7 +89,7 @@ def evaluate(analysis: EquityAnalysis):
     else:
         start = None
     current = {
-        f.concept: f for f in facts if f.period_end == end and f.period_start in (None, start)
+        concept_key(f): f for f in facts if f.period_end == end and f.period_start in (None, start)
     }
     previous_end = None
     if end:
@@ -44,7 +98,7 @@ def evaluate(analysis: EquityAnalysis):
         except ValueError:
             previous_end = end.replace(year=end.year - 1, day=28)
     previous = {
-        f.concept: f
+        concept_key(f): f
         for f in facts
         if f.period_end == previous_end
         and (
@@ -53,7 +107,10 @@ def evaluate(analysis: EquityAnalysis):
             and (f.period_start.month, f.period_start.day) == (start.month, start.day)
         )
     }
-    consistent_basis = len({(f.basis_date, f.scope, f.currency) for f in facts}) <= 1
+    consistent_basis = (
+        not fact_conflict
+        and len({(f.basis_date, f.scope, f.currency, f.measurement_basis) for f in facts}) <= 1
+    )
 
     def metric(name, domain, value, formula, inputs=(), unit="ratio", source_ids=()):
         obj = Metric(
@@ -94,6 +151,7 @@ def evaluate(analysis: EquityAnalysis):
                 counter_evidence=list(counter),
                 unknowns=list(unknowns),
                 origin=origin,
+                contributes_to_outcome=level != "context",
             )
         )
 
@@ -129,13 +187,26 @@ def evaluate(analysis: EquityAnalysis):
                 [net, cash],
             )
         if net.value > 0 and cash.value < 0:
+            adjustment = current.get("cashflow_investment_adjustment")
+            needs_bridge = (
+                adjustment is not None
+                and adjustment.value < 0
+                and abs(adjustment.value) >= abs(cash.value) / 2
+            )
             flag(
                 "F01",
                 "financial",
                 "Kâr açıklanırken faaliyet nakdi negatif",
-                "Tahsilat, işletme sermayesi, avanslar ve nakit dışı düzeltmelerle birlikte incelenmeli.",
+                "Tahsilat, işletme sermayesi, avanslar ve nakit dışı düzeltmelerle birlikte incelenmeli. "
+                + (
+                    "Yatırım bağlantılı düzeltme raporlanan negatif nakdin önemli bölümünü oluşturuyor; tutarın tamamı faaliyet para yakması sayılmadı."
+                    if needs_bridge
+                    else ""
+                ),
                 ["profit_cash_gap"],
                 evidence=[net.evidence, cash.evidence],
+                level="context" if needs_bridge else "review",
+                counter=[adjustment.evidence] if adjustment else [],
             )
     if "equity" in current and current["equity"].value < 0:
         flag(
@@ -177,13 +248,27 @@ def evaluate(analysis: EquityAnalysis):
                 flag(
                     "F03",
                     "financial",
-                    "Yaklaşan finansal borca göre nakit sınırlı",
-                    "Nakit oranı 0,25'in altında ve faaliyet nakdi negatif. Finansal yatırımların likiditesi, blokajlar ve borç vadeleri ayrıca incelenmeli.",
+                    "Kısa vadeli finansal borca göre yalnız nakit bakiyesi düşük",
+                    "Yalnız nakit/finansal borç oranı 0,25'in altında ve faaliyet nakdi negatif. Bu oran toplam likidite veya borç ödeyememe sonucu değildir; finansal yatırımların varlığı, likiditesi, blokajlar ve borç vadeleri birlikte incelenmeli.",
                     ["cash_short_financial_debt"],
-                    evidence=[current[k].evidence for k in sorted(debt_names)],
+                    evidence=[current[k].evidence for k in sorted(debt_names)]
+                    + [current["operating_cash_flow"].evidence],
+                    counter=[current["current_financial_investments"].evidence]
+                    if "current_financial_investments" in current
+                    else [],
                     unknowns=[
                         "Serbest nakit/blokaj ve finansal yatırım likiditesi bu orandan çıkarılamaz."
                     ],
+                )
+            investments = current.get("current_financial_investments")
+            if investments and investments.value >= 0:
+                metric(
+                    "cash_plus_current_investments_debt_sensitivity",
+                    "financial",
+                    (current["cash"].value + investments.value) / debt,
+                    "(cash + current_financial_investments) / (short_debt + current_long_debt); liquidity UNVERIFIED",
+                    [current[k] for k in sorted(debt_names)] + [investments],
+                    unit="sensitivity_not_liquidity_ratio",
                 )
     if {"total_assets", "total_liabilities", "equity"} <= current.keys():
         a, liabilities, e = (current[k] for k in ("total_assets", "total_liabilities", "equity"))
@@ -212,6 +297,7 @@ def evaluate(analysis: EquityAnalysis):
                 f.model_copy(
                     update={
                         "level": "context",
+                        "contributes_to_outcome": False,
                         "unknowns": f.unknowns + ["Finansal tablo eşitliği doğrulanamadı."],
                     }
                 )
@@ -269,7 +355,7 @@ def evaluate(analysis: EquityAnalysis):
                     "O01",
                     "operations",
                     "Satış ve faaliyet marjında birlikte gerileme",
-                    "Aynı satın alma gücüyle satış en az %20, faaliyet marjı en az 5 puan gerilemiş.",
+                    "Aynı raporlama esasıyla satış en az %20, faaliyet marjı en az 5 puan gerilemiş. Nominal büyüklükler reel değişim değildir.",
                     ["revenue_growth", "margin_change"],
                     evidence=[r.evidence, old.evidence, op.evidence, prev_op.evidence],
                 )
@@ -356,6 +442,14 @@ def evaluate(analysis: EquityAnalysis):
                 )
             break
 
+    # No numerical cross-basis metric is added when statement context is invalid.
+    if consistent_basis and coverage["financial"] != "invalid":
+        metrics.extend(measure_investor_signals(current, previous, facts))
+    extra_metrics, extra_findings = evaluate_observations(analysis, current)
+    metrics.extend(extra_metrics)
+    findings.extend(extra_findings)
+    findings.extend(evaluate_signal_observations(analysis))
+
     claims_by_kind = {}
     for claim in analysis.claims:
         claims_by_kind.setdefault(claim.kind, []).append(claim)
@@ -434,14 +528,47 @@ def evaluate(analysis: EquityAnalysis):
                 level="context",
                 evidence=claim.evidence,
             )
-    if analysis.ai.get("extraction_complete"):
+    source_coverage = analysis.ai.get("source_coverage")
+
+    def text_coverage(ids):
+        if not ids:
+            return "unavailable"
+        if source_coverage is None:
+            return "text_scanned" if analysis.ai.get("extraction_complete") else "unavailable"
+        entries = [source_coverage.get(sid, {}) for sid in ids]
+        processed = sum(e.get("processed", 0) for e in entries)
+        if not processed:
+            return "unavailable"
         if any(
-            s.kind in {"financial", "financial_attachment", "activity", "attachment", "disclosure"}
-            for s in analysis.sources
+            not e.get("planned")
+            or e.get("processed") != e.get("planned")
+            or e.get("failed")
+            or e.get("read_issues")
+            for e in entries
         ):
-            coverage["relations"] = "text_scanned"
-        if financial:
-            coverage["audit"] = "text_scanned"
+            return "text_partially_scanned"
+        if any(e.get("rejections") for e in entries):
+            return "text_scanned_with_rejections"
+        return "text_scanned"
+
+    relation_ids = {
+        s.id
+        for s in analysis.sources
+        if s.kind in {"financial", "financial_attachment", "activity", "attachment", "disclosure"}
+    }
+    audit_ids = {
+        s.id
+        for s in analysis.sources
+        if latest_audit
+        and (
+            s.id == latest_audit.id
+            or latest_audit.disclosure_id is not None
+            and s.disclosure_id == latest_audit.disclosure_id
+            and s.kind == "financial_attachment"
+        )
+    }
+    coverage["relations"] = text_coverage(relation_ids)
+    coverage["audit"] = text_coverage(audit_ids)
     # Holdings remain observations, never inferred beneficial ownership or an additive sum.
     for holding in analysis.holdings:
         flag(
@@ -504,19 +631,35 @@ def evaluate(analysis: EquityAnalysis):
             f.domain,
             f.rule_id
             if not f.evidence
-            else (f.title, tuple((r.block_id, r.quote) for r in f.evidence)),
+            else (
+                f.title,
+                tuple((r.block_id, r.quote) for r in f.evidence),
+                tuple((r.block_id, r.quote) for r in f.counter_evidence),
+                tuple(f.unknowns),
+                f.level,
+                f.contributes_to_outcome,
+            ),
         )
         if key not in seen:
             seen.add(key)
             deduped.append(f)
-    indicators = [f for f in deduped if f.origin == "indicator" and f.level != "context"]
+    indicators = [
+        f
+        for f in deduped
+        if f.origin == "indicator" and f.level != "context" and f.contributes_to_outcome
+    ]
     domains = {f.domain for f in indicators}
     if any(f.level == "critical" for f in indicators) or len(domains) >= 2:
         outcome = "dikkat_gerektiriyor"
     elif indicators:
         outcome = "sinirli_isaret"
-    elif coverage["financial"] != "available" or not coverage["market"].startswith(
-        "price_available"
+    elif (
+        coverage["financial"] != "available"
+        or coverage["operations"] != "available"
+        or not coverage["market"].startswith("price_available")
+        or coverage["relations"] != "text_scanned"
+        or coverage["audit"] != "text_scanned"
+        or analysis.ai.get("acquisition_complete") is False
     ):
         outcome = "yetersiz_veri"
     else:
@@ -526,15 +669,20 @@ def evaluate(analysis: EquityAnalysis):
         coverage["financial"] = "invalid"
         coverage["operations"] = "invalid"
         deduped = [
-            f.model_copy(update={"level": "context"})
+            f.model_copy(update={"level": "context", "contributes_to_outcome": False})
             if f.domain in {"financial", "operations"}
             else f
             for f in deduped
         ]
-        domains = {f.domain for f in deduped if f.level != "context" and f.origin == "indicator"}
+        domains = {
+            f.domain
+            for f in deduped
+            if f.level != "context" and f.origin == "indicator" and f.contributes_to_outcome
+        }
         outcome = (
             "dikkat_gerektiriyor"
-            if any(f.level == "critical" for f in deduped) or len(domains) >= 2
+            if any(f.level == "critical" and f.contributes_to_outcome for f in deduped)
+            or len(domains) >= 2
             else "sinirli_isaret"
             if domains
             else "yetersiz_veri"

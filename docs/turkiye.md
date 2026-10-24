@@ -1,6 +1,8 @@
 # Türkiye hisseleri: tarihli inceleme
 
-Güncelleme: 2026-10-16. Desteklenen ilk hisseler OZATD ve karşılaştırma vakası HATSN. Enron'un `2000-03-31` komutu, çıktı biçimleri ve kayıtları korunur. Python/PostgreSQL/Codex altyapısı ortaktır; kaynak ve tablo okuyucuları piyasaya göre ayrıdır. Yeni bir model eğitilmez.
+Kolay başlangıç: repo klasöründe `./baslat`. Menü şirket/tarih seçtirir, mevcut kayda 10/20/40 paket ekler veya yeni analiz başlatır; sonuçta önemli işaretleri ve aşama sürelerini gösterir. [Ayrıntılar](../README.md#hızlı-başlatma).
+
+Güncelleme: 2026-10-23. Desteklenen hisseler OZATD, HATSN ve KERVN. Enron'un `2000-03-31` komutu, çıktı biçimleri ve kayıtları korunur. Python/PostgreSQL/Codex altyapısı ortaktır; kaynak ve tablo okuyucuları piyasaya göre ayrıdır. Yeni bir model eğitilmez. Güncel [v4 kaynaklı karşılaştırma, fon izi ve deney kullanımı](early-review-v4.md); [v3 gözlem/KERVN temeli](investor-checks.md). Aşağıdaki eski gerçek koşular tarihsel snapshot'lardır, yeni sürüm başarısı değildir.
 
 ## Çalıştırma
 
@@ -9,6 +11,7 @@ uv run bilanco analyze --company ozatd --as-of 2025-03-31
 uv run bilanco replay --company ozatd --study pre-2025-spk
 uv run bilanco replay --company ozatd --study pre-2026-funds
 uv run bilanco analyze --company hatsn --as-of 2025-03-31
+uv run bilanco analyze --company kervn --as-of 2016-03-31
 ```
 
 Türkiye komutları SEC iletişim e-postası istemez. PostgreSQL ve mevcut Codex oturumu kullanılır. KAP web bağlantısı ve Yahoo bağlantısı ücretsiz erişim denemeleridir; resmî sözleşmeli API hizmeti veya kesintisiz erişim garantisi değildir. TLS/403/429 engelleri aşılmaz, güvenlik doğrulaması kapatılmaz. Bağlantı hatası rapora yazılır. Çıkış `0`: tamamlandı, `3`: kısmi, `1`: veri/çalışma başarısız, `130`: iptal. Kısmi çalışmada da JSON/Markdown saklanır. `--refresh` HTTP önbelleğini yeniler; eski ham baytlar silinmez.
@@ -68,7 +71,7 @@ Yahoo geçmiş fiyatları bugünden yeniden oluşturulur; geçmiş düzeltme sü
 
 Akış: tarih kontrolü → Türkçe tablo çıkarımı → Python hesapları → alıntılı AI çıkarımı ve karşı açıklamalar → Python değerlendirmesi.
 
-`tr-equity-review-1` eşikleri vaka sonucuna göre otomatik ayarlanmaz:
+Aşağıdaki v1 pilot kuralları korunur; `tr-equity-review-3` ile yatırım bağlantılı büyük negatif nakit mutabakatı varsa F01 bağlama indirilir ve 15 gözlem ayrı inceleme kayıtları olur. Güncel `tr-equity-review-4` ayrıca nötr belge olgularından karşılaştırma ve ayrı yatırım öncesi inceleme kuyruğu üretir. Eşikler vaka sonucuna göre otomatik ayarlanmaz:
 
 | Kural | Koşul | Alan |
 |---|---|---|
@@ -76,7 +79,7 @@ Akış: tarih kontrolü → Türkçe tablo çıkarımı → Python hesapları �
 | F02 | Özkaynak negatif | Doğrudan dikkat |
 | F03 | Nakit/(kısa finansal borç + uzun borcun kısa kısmı) < 0,25 ve faaliyet nakdi negatif | Finansal |
 | F05 | Alacak gün vekilinde ≥30 gün artış ve alacak büyümesi–satış büyümesi ≥20 puan | Finansal |
-| O01 | Aynı satın alma gücüyle satış değişimi ≤−%20 ve faaliyet marjı farkı ≤−5 puan | Faaliyet |
+| O01 | Aynı raporlama esasıyla satış değişimi ≤−%20 ve faaliyet marjı farkı ≤−5 puan; nominal veri reel değişim değildir | Faaliyet |
 | O02 | Açık satış tahmininin gerçekleşmesi <%80; dönem/para birimi/satın alma gücü aynı | Faaliyet |
 | M01 | 60 işlem gününde getiri ≥%100 ve BIST 100 farkı ≥50 puan | Piyasa |
 | İlişki | Tek gerçekleşmiş işlem + açık yönetici bağlantısı + aynı taraflar | İlişkiler |
@@ -86,7 +89,7 @@ Alacak gün vekili = dönem sonu ticari alacak × dönem gün sayısı / satış
 
 Genel sonuç: doğrudan dikkat gerekçesi veya en az iki farklı alanda işaret → `dikkat_gerektiriyor`; tek alanda → `sinirli_isaret`; gerekli veri yok → `yetersiz_veri`; yeterli incelenen finansal/piyasa verisinde işaret yok → `belirgin_isaret_yok`. Kapsam ve çalışma durumu bu sonuçtan ayrıdır; `partial + dikkat_gerektiriyor` mümkündür. Bu olasılık, dolandırıcılık hükmü veya al/sat emri değildir.
 
-Codex yalnız kabul edilmiş belge paketlerini görür, internet araması kapalıdır. Sayısal hesap ve son sınıf Python'dadır. Türkçe iddia alıntıları, taraflar, tek işlem kapsamı, olumsuzluklar ve denetim ifadeleri kontrol edilir. Karşı beyanlar da saklanır; alıntı varlığı beyanın doğru olduğunu kanıtlamaz. Şirketin model eğitimindeki geçmişi silinemez, tam kör deney iddiası yoktur. Tahmin ve sahiplik adaylarında AI'ın sayı önerisi kaynak metindeki tam sayı/tarih/birimle eşleşmelidir; belirsiz adaylar reddedilir.
+Çıkarım çağrısı yalnız kabul edilmiş belge paketlerini görür, internet araması kapalıdır. Türkiye analyze için ayrı, sınırlı web kaynak keşfi ve doğrulama hatasında model yükseltme eklendi; [güncel akış/bütçe](source-discovery-routing.md). Replay kendiliğinden web keşfi açmaz. Sayısal hesap ve son sınıf Python'dadır. Türkçe iddia alıntıları, taraflar, tek işlem kapsamı, olumsuzluklar ve denetim ifadeleri kontrol edilir. Karşı beyanlar da saklanır; alıntı varlığı beyanın doğru olduğunu kanıtlamaz. Şirketin model eğitimindeki geçmişi silinemez, tam kör deney iddiası yoktur. Tahmin ve sahiplik adaylarında AI'ın sayı önerisi kaynak metindeki tam sayı/tarih/birimle eşleşmelidir; belirsiz adaylar reddedilir.
 
 Aynı belge/prompt/model için doğrulanan AI cevabı yerel önbellekte tekrar kullanılır. Bir analiz ayardaki çağrı sınırına, bir replay toplam 128 yeni çağrıya tabidir. Bütçe biterse kalan kapsam eksik kaydedilir. İptal sonrası yeni aşama/ay başlatılmaz.
 

@@ -1,0 +1,12 @@
+#!/bin/sh
+# Run from the repository even when launched from another working directory.
+set -eu
+cd "$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+if command -v uv >/dev/null 2>&1; then
+    exec uv run bilanco "$@"
+fi
+if [ -x .venv/bin/bilanco ]; then
+    exec .venv/bin/bilanco "$@"
+fi
+printf '%s\n' 'Önce uv kurup bu klasörde uv sync çalıştırın; ayrıntılar README.md dosyasında.' >&2
+exit 1
