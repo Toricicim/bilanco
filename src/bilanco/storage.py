@@ -179,6 +179,20 @@ class Store:
             raise ValueError("Türkiye analizi bulunamadı.")
         return EquityAnalysis.model_validate(row[0]), EquityAssessment.model_validate(row[1])
 
+    def find_equity_run(self, company_id, *, as_of=None, prompt_version):
+        """Prefer the fullest compatible finished snapshot, never a running/cancelled job."""
+        row = self.connection.execute(
+            "SELECT r.id FROM bilanco.runs r JOIN bilanco.equity_results e ON e.run_id=r.id "
+            "WHERE r.company=%s AND (%s::date IS NULL OR r.as_of=%s::date) "
+            "AND r.status IN ('complete','partial') "
+            "AND e.analysis->'ai'->>'extraction_prompt_version'=%s "
+            "AND COALESCE(e.analysis->'ai'->>'cancelled','false')='false' "
+            "ORDER BY r.as_of DESC, (e.analysis->'ai'->>'packets_processed')::int DESC NULLS LAST, "
+            "r.finished_at DESC LIMIT 1",
+            (company_id, as_of, as_of, prompt_version),
+        ).fetchone()
+        return self.load_equity(str(row[0])) if row else None
+
     def save_replay(self, payload):
         self.connection.execute(
             "INSERT INTO bilanco.replays(id,company,study,payload) VALUES (%s,%s,%s,%s)",

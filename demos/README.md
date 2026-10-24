@@ -1,6 +1,6 @@
 # Kayıtlı koşular — HTML gösterimleri
 
-Güncelleme: 2026-10-16.
+Güncelleme: 2026-10-23.
 
 [enron-run-88f8d197.html](enron-run-88f8d197.html) dosyasını indirip tarayıcıda açın. Tek başına paylaşılabilir; sunucu, veritabanı, API anahtarı veya internet bağlantısı gerektirmez.
 
@@ -19,13 +19,19 @@ Not (2026-10-16): Bu dosya related-party-1 koşusunun tarihsel snapshot’ıdır
 
 ## Özata Denizcilik — 31 Mart 2025
 
-[ozatd-2025-03-31.html](ozatd-2025-03-31.html) tek dosyadır; indirip tarayıcıda açın. Sunucu/API/Codex/veritabanı gerektirmez. İnternet olmadan bulgular, kaynak alıntıları, hesaplar ve JSON indirmeleri çalışır.
+Güncelleme: 2026-10-24.
 
-- Kaynak koşu: `04d1cc5b-9fd5-42e1-b760-733b0ef574a1`; bilgi kesimi 2025-03-31 İstanbul gün sonu, finansal tablo dönemi 2024. Kural `tr-equity-review-1`.
-- Sonuç: **sinirli_isaret**, durum **partial**. F01: 225.351.000 TL kâr karşısında −1.173.912.255 TL faaliyet nakdi. F03: nakit / kısa finansal borç yaklaşık %12,19. İki bulgu aynı finansal alanda; kapsamlı dikkat veya hile hükmü yok.
-- 93 kabul edilmiş belge, 38 tutar, 18 gösterge, 128 bulgu (2 inceleme,126 bağlam) ve56 ret/çıkarım eksikliği gömülüdür. Belge kabulü bütün belgenin analiz edildiği anlamına gelmez. İlişkiler/denetim kapsamı yeterli sayılmadı; OCR/ek/sayı/AI bütçe sınırları gösterilir.
-- Önceki gerçek koşuda32 yeni AI çağrısı yapıldı; düzeltme sonrası bu snapshot33 doğrulanan önbellek paketiyle,0 yeni çağrıyla hesaplandı. Tüm metinlerin tarandığı iddiası yok.
-- Özet, kâr/nakit grafiği, düzey/alan/arama filtreleri, kaynak alıntıları ve konumları, bütün tutarlar/formüller, eksikler ve özgün iki JSON indirmesi bulunur. HTML üretirken ek analiz veya yeni risk puanı eklenmedi. Finansal yatırımlar nakit/borç oranına dahil değil; bilinmeyen likidite/blokaj açıklaması korunur.
-- Ham JSON metinleri ve SHA-256 özetleri korunur. HTML SHA-256: `772b388ba8c5d6b8e76301e710c2e37f05c946eccfcc4dd44f45c6784d20c8c9`.
-- Headless Chromium ile 1280/768/390 genişlikleri, taşma, bütün kayıtlar/alıntılar, filtreler, iki JSON'un tam eşliği/indirmesi, çevrimdışı çalışma ve yazdırma açılımı kontrol edildi. Dış HTTP isteği ve JS hatası0. Mobil/masaüstü/grafik ekran görüntüleri yerelde incelendi.
-- Önceki Enron HTML/JSON ve eski kısmi OZATD tarama dosyaları değiştirilmedi. Bu, yeni program arayüzü değil; kullanıcının istediği ayrı kayıtlı sonuç gösterimidir.
+[ozatd-2025-03-31.html](ozatd-2025-03-31.html) güncel 70 paketlik çıktıyı gösterir. Tek dosyadır; sunucu, API anahtarı veya veritabanı olmadan paylaşılabilir. Kaynak bağlantıları dışında çevrimdışı çalışır.
+
+- Kaynak koşu: `769a301b-a401-42a4-a74a-db7b922aa96a`; kesim 2025-03-31 İstanbul gün sonu. Kural `tr-equity-review-4`, şema 1.3, çıkarım 5. Önceki `450216f0-d9ff-4839-bc50-973b08cb448b` koşusunun tarihli kaynakları ve ham dosya hash'leri doğrulanarak yeni UUID ile kullanıldı.
+- **70/141 paket işlendi**, 71 paket sınır nedeniyle okunmadı. İşlenen 70 paketin 30'unda reddedilen adaylar var; işlenmiş paket bütün iddiaları onaylanmış paket değildir. Durum **partial**.
+- Genel sonuç **sinirli_isaret**, ayrı inceleme mesajı **inceleme_gerekli**. 107 bulgunun 2'si inceleme (F01/F03), 105'i bağlam. Ek 40 paket yeni önemli risk alarmı üretmedi.
+- Anlamlı yeni bağlam: **C-113**, 6 Ocak 2025 tarihli [KAP 1372848](https://www.kap.org.tr/tr/api/BildirimPdf/1372848) şirket açıklaması. Basında Özata Denizcilik'e atfedilen iş ortaklığının hâkim ortak Özata Tersanecilik'e ait olduğunu belirtiyor. Bu şirket beyanı, bağımsız doğrulama veya dolandırıcılık tespiti değildir. HTML'nin koşullu güncellenme gerekçesi bu kaynaklı ayrımdır; yalnız bulgu sayısının artması değildir.
+- 94 belge, 148 finansal tutar, 29 gösterge, 59 iddia, 40 kurumsal gözlem, 25 kaynak beyanı, 2 nötr belge olgusu/fon pozisyonu, 6 geçmiş dönem ve 59 ret. Fon toplam değeri/iade koşulları gibi eksikler devam eder; belge karşılaştırması 0.
+- Önceki 30 paketten ayrı kaynak/blok kimlikleriyle doğrulanan **40 yeni paket**: 12 iddia (11 operasyon, 1 karşı açıklama), 1 sahiplik gözlemi ve 3 gerçekleşme karşı açıklaması sağladı. Önceki paketlerin yeniden doğrulama farkları bunlara eklenmedi.
+- Bu devam koşusunda finansal HTTP ve web kaynak keşfi kapalıydı. Önceki 30 paketlik koşuda keşif çalışmış, yeni uygun kaynak önerisi gelmemişti. Sonuç bütün web/fon kaynaklarının tarandığı anlamına gelmez.
+- **30 önbellek kullanımı ve 61 yeni model çağrısı**; eski retli yanıtların güçlü tekrarları da bu sayıya dahil. Yeni başlatıcıdaki `--retry-cached` varsayılanı bu çalışma başladıktan sonra eklendi; bu koşuda uygulanmış gibi gösterilmez. Kaydedilmiş analiz süresi 809,4655 saniye (yaklaşık 13 dk 29 sn); yeni ayrıntılı aşama ölçümleri bu eski koşuda yok.
+- HTML yalnız bu koşunun Analysis ve Assessment verilerini gömer. JSON indirmeleri, bütün bulgular/alıntılar, filtreler, kontrol izleri ve model denetimi korunur. Enron HTML'si değişmedi.
+- Kontrol: iki JSON/hash/indirme eşliği, 1280/768/390 genişlikleri, yazdırma ve filtreler doğrulandı; dış HTTP isteği ve JavaScript hatası 0.
+
+HTML SHA-256: `541aca72d85045bb8169d4ad640d3ddaa304046981734df74ed3ccfe88b95eb7`.

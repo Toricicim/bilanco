@@ -13,9 +13,11 @@ build/
 htmlcov/
 data/assessments/
 data/evaluations/
+data/diagnostics/
 data/equity-cache/
 data/replays/
 # New runtime data stays local; already tracked historical Enron snapshots remain tracked.
 data/runs/
 data/raw/
+work/
 .DS_Store

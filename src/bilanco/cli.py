@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import sys
 import uuid
+from dataclasses import replace
 from datetime import date
 from pathlib import Path
 
@@ -16,10 +17,13 @@ from .assessment import run_assessment
 from .config import AS_OF, Settings
 from .equity_models import COMPANIES
 from .equity_pipeline import run_equity
-from .equity_replay import STUDIES, run_replay
+from .equity_replay import STUDIES, run_replay, validate_study
+from .equity_study import evaluate_study
+from .launcher import choose_start
 from .models import Block, Extraction
 from .pipeline import run_analysis
-from .storage import Store
+from .storage import Store, write_json
+from .terminal import print_equity_summary, saved_timings
 
 
 def parser() -> argparse.ArgumentParser:
@@ -28,10 +32,44 @@ def parser() -> argparse.ArgumentParser:
     )
     result.add_argument("--version", action="version", version=__version__)
     sub = result.add_subparsers(dest="command", required=True)
+    sub.add_parser("start", help="Şirket/tarih ve10/20/40paket seçimiyle etkileşimli başlat")
     analyze = sub.add_parser("analyze", help="Gerçek kaynak toplama ve Codex analizi başlatır")
     analyze.add_argument("--company", required=True, type=str.lower, choices=["enron", *COMPANIES])
     analyze.add_argument("--as-of", required=True, type=date.fromisoformat)
     analyze.add_argument("--bundle", type=Path, help="Doğrulamalı KAP PDF / piyasa CSV paketi")
+    analyze.add_argument(
+        "--max-packets",
+        type=int,
+        default=30,
+        help="Türkiye: toplam işlenecek paket (önbellek dahil)",
+    )
+    analyze.add_argument(
+        "--discover",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Türkiye: tarih/kimlik kontrollü AI kaynak keşfi",
+    )
+    analyze.add_argument(
+        "--resume-run",
+        type=uuid.UUID,
+        help="Türkiye: aynı şirket/tarih kaynaklarını koruyup yeni koşu aç",
+    )
+    analyze.add_argument("--model", help="Türkiye: ilk çıkarım modeli (varsayılan gpt-6-luna)")
+    analyze.add_argument(
+        "--retry-cached",
+        action="store_true",
+        help="Türkiye: önbellekteki retli adaylar için de yeniden güçlü model çağır",
+    )
+    analyze.add_argument(
+        "--fallback-model",
+        default="gpt-6.1-sol",
+        help="Türkiye: doğrulama hatasında tek güçlü tekrar",
+    )
+    analyze.add_argument(
+        "--max-ai-calls",
+        type=int,
+        help="Türkiye: keşif ve tekrarlar dahil ortak fiziksel çağrı sınırı",
+    )
     analyze.add_argument(
         "--offline",
         action="store_true",
@@ -60,6 +98,12 @@ def parser() -> argparse.ArgumentParser:
     db = sub.add_parser("db", help="Veritabanı işlemleri")
     db.add_argument("action", choices=["init"])
     sub.add_parser("runs", help="Son çalışmaların durumunu göster")
+    study = sub.add_parser(
+        "evaluate-study",
+        help="Kayıtlı çıktılarda yakalama/yanlış alarm ölçer; HTTP, AI ve DB kullanmaz",
+    )
+    study.add_argument("--manifest", required=True, type=Path)
+    study.add_argument("--output", required=True, type=Path)
     return result
 
 
@@ -108,7 +152,43 @@ def doctor(settings: Settings) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if not argv:
+        if sys.stdin is None or not sys.stdin.isatty():
+            parser().print_help()
+            return 2
+        argv = ["start"]
     args = parser().parse_args(argv)
+    interactive = args.command == "start"
+    if interactive and (sys.stdin is None or not sys.stdin.isatty()):
+        print(
+            "Başlangıç menüsü açık bir terminal ister. Otomasyon için analyze --company ... --as-of ... kullanın.",
+            file=sys.stderr,
+        )
+        return 2
+    if args.command == "evaluate-study":
+        try:
+            if args.output.exists():
+                raise ValueError("Çıktı dosyası zaten var; yeni bir yol seçin.")
+            result = evaluate_study(args.manifest)
+            write_json(args.output, result)
+            print(
+                json.dumps(
+                    {"results": result["results"], "output": str(args.output)},
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+            return 0
+        except (ValueError, OSError) as exc:
+            print(str(exc), file=sys.stderr)
+            return 2
+    if args.command == "replay":
+        try:
+            validate_study(args.company, args.study)
+        except ValueError as exc:
+            print(str(exc), file=sys.stderr)
+            return 2
     try:
         settings = Settings.load()
         if args.command == "doctor":
@@ -171,6 +251,17 @@ def main(argv: list[str] | None = None) -> int:
                 return 2
         with Store(settings.database_url) as store:
             store.initialize()
+            if interactive:
+                try:
+                    chosen = choose_start(
+                        settings, store, read=input, write=lambda s: print(s, flush=True)
+                    )
+                except (EOFError, KeyboardInterrupt):
+                    print("\nBaşlatılmadı; seçim iptal edildi.")
+                    return 130
+                if chosen is None:
+                    return 0
+                args = parser().parse_args(chosen)
             if args.command == "db":
                 print("Veritabanı şeması hazır; finansal veri indirilmedi.")
                 return 0
@@ -211,6 +302,13 @@ def main(argv: list[str] | None = None) -> int:
                     else 3
                 )
             if args.command == "analyze" and args.company in COMPANIES:
+                settings = replace(
+                    settings, codex_model=args.model or settings.codex_model or "gpt-6-luna"
+                )
+                if args.max_ai_calls is not None:
+                    if not 1 <= args.max_ai_calls <= 128:
+                        raise ValueError("Çağrı sınırı 1–128 olmalı.")
+                    settings = replace(settings, max_ai_calls=args.max_ai_calls)
                 analysis, assessment = run_equity(
                     settings,
                     store,
@@ -219,24 +317,46 @@ def main(argv: list[str] | None = None) -> int:
                     bundle=args.bundle,
                     refresh=args.refresh,
                     offline=args.offline,
+                    max_packets=args.max_packets,
+                    discover=args.discover,
+                    resume_run=args.resume_run,
+                    fallback_model=args.fallback_model,
+                    retry_cached=args.retry_cached,
                     progress=lambda s: print(f"[bilanco] {s}", file=sys.stderr),
                 )
                 directory = settings.data_dir / "runs" / analysis.run_id
-                print(
-                    json.dumps(
-                        {
-                            "run_id": analysis.run_id,
-                            "status": analysis.status,
-                            "outcome": assessment.outcome,
-                            "coverage": assessment.coverage,
-                            "analysis": str(directory / "analysis.json"),
-                            "assessment": str(directory / "assessment.json"),
-                            "report": str(directory / "report.md"),
-                        },
-                        ensure_ascii=False,
-                        indent=2,
-                    )
+                timings = saved_timings(directory, analysis)
+                print_equity_summary(
+                    analysis,
+                    assessment,
+                    directory,
+                    timings=timings,
+                    write=lambda s: print(
+                        s, file=sys.stdout if interactive else sys.stderr, flush=True
+                    ),
                 )
+                if not interactive:
+                    print(
+                        json.dumps(
+                            {
+                                "run_id": analysis.run_id,
+                                "status": analysis.status,
+                                "outcome": assessment.outcome,
+                                "investor_review": assessment.investor_review.model_dump(
+                                    mode="json"
+                                )
+                                if assessment.investor_review
+                                else None,
+                                "coverage": assessment.coverage,
+                                "timings": timings,
+                                "analysis": str(directory / "analysis.json"),
+                                "assessment": str(directory / "assessment.json"),
+                                "report": str(directory / "report.md"),
+                            },
+                            ensure_ascii=False,
+                            indent=2,
+                        )
+                    )
                 return (
                     130
                     if analysis.ai.get("cancelled")

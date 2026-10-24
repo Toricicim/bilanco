@@ -707,7 +707,7 @@ def test_cli_turkey_does_not_require_sec_contact(settings, monkeypatch, capsys):
         return run_equity(*args, **kwargs, dataset=dataset(settings), codex=EmptyAI())
 
     monkeypatch.setattr("bilanco.cli.run_equity", run)
-    assert main(["analyze", "--company", "ozatd", "--as-of", "2025-03-31"]) == 3
+    assert main(["analyze", "--company", "ozatd", "--as-of", "2025-03-31", "--no-discover"]) == 3
     assert json.loads(capsys.readouterr().out)["outcome"] == "dikkat_gerektiriyor"
 
 
