@@ -180,3 +180,7 @@ CI aynı testleri PostgreSQL 18 servisiyle çalıştırır. Üretim analizi CI'd
 Yeni değerlendirmeler `related-party-2` kurallarını ve Assessment 1.1'i kullanır. [Düzeltme ve doğrulama kaydı](docs/review-fixes.md) · [Kurallar ve sınırlar](docs/assessment.md). Sürümü doğrulanmamış arşiv PDF'si finansal girdiye alınmaz; SEC özgün dosyası yoksa kapsam eksik kalır. İptalde kısmi kayıt korunur, yeni AI aşaması başlamaz (çıkış 130). Negatif özkaynak ayrıca görünür; belirsiz used-in nakit işareti olumlu yorumlanmaz.
 
 [Değerlendirme komutları](evaluation/README.md) dört öncelik sınıfını, gereksiz incelemeleri ve ham bloklardan ilk aday çıkarımındaki kaçırmaları ölçebilir. 48 pasaj yapay regresyon setidir; insan etiketleri henüz tamamlanmadı. Önceki Enron HTML/JSON dosyaları **related-party-1 tarihsel snapshot'ıdır**; bu kod düzeltmelerinin yeniden çalıştırılmış sonucu değildir.
+
+## Ekip ve GitHub çalışma düzeni
+
+**Main'e doğrudan commit/push yok. Her bağımsız iş ayrı branch'te, teslim PR ile.** Arkadaşlar ve ajanları için adım adım [GitHub rehberi](CONTRIBUTING.md); ajanların uyması gereken kurallar [AGENTS.md](AGENTS.md) dosyasında. Kurulum, branch açma, commit, push, PR ve çakışma çözümü rehberde anlatılıyor.
