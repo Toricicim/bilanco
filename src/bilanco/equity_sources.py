@@ -166,7 +166,14 @@ def document_blocks(raw: bytes, source_id: str) -> tuple[list[Block], list[str]]
 
 
 def accept_kap(
-    raw: bytes, disclosure_id: int, company: Company, as_of: date, settings: Settings, manual=False
+    raw: bytes,
+    disclosure_id: int,
+    company: Company,
+    as_of: date,
+    settings: Settings,
+    manual=False,
+    *,
+    persist=True,
 ) -> tuple[EquitySource, list[Block], list[str]]:
     sha = digest(raw)
     sid = f"kap-{disclosure_id}-{sha[:16]}"
@@ -205,7 +212,8 @@ def accept_kap(
     ):
         kind = "activity"
     path = settings.data_dir / "raw" / sha
-    atomic_write(path, raw)
+    if persist:
+        atomic_write(path, raw)
     source = EquitySource(
         id=sid,
         disclosure_id=disclosure_id,
@@ -662,10 +670,10 @@ def acquire(
             ids = set()
             ordering = {}
             start = max(
-                date(company.listed_at.year, 1, 1),
+                date(company.listed_at.year, 1, 1) if company.listed_at else date(1900, 1, 1),
                 as_of - timedelta(days=company.catalog_lookback_days),
             )
-            if start > date(company.listed_at.year, 1, 1):
+            if company.listed_at is None or start > date(company.listed_at.year, 1, 1):
                 result.issues.append(
                     f"KAP katalog penceresi {start}–{as_of}; daha eski açıklamalar taranmadı."
                 )

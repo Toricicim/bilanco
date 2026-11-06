@@ -2,7 +2,7 @@
 
 Kolay başlangıç: repo klasöründe `./baslat`. Menü şirket/tarih seçtirir, mevcut kayda 10/20/40 paket ekler veya yeni analiz başlatır; sonuçta önemli işaretleri ve aşama sürelerini gösterir. [Ayrıntılar](../README.md#hızlı-başlatma).
 
-Güncelleme: 2026-10-23. Desteklenen hisseler OZATD, HATSN ve KERVN. Enron'un `2000-03-31` komutu, çıktı biçimleri ve kayıtları korunur. Python/PostgreSQL/Codex altyapısı ortaktır; kaynak ve tablo okuyucuları piyasaya göre ayrıdır. Yeni bir model eğitilmez. Güncel [v4 kaynaklı karşılaştırma, fon izi ve deney kullanımı](early-review-v4.md); [v3 gözlem/KERVN temeli](investor-checks.md). Aşağıdaki eski gerçek koşular tarihsel snapshot'lardır, yeni sürüm başarısı değildir.
+Güncelleme: 2026-10-23. Yerleşik hisseler OZATD, HATSN ve KERVN; ek hisseler resmî bildirimden doğrulanan yerel kayıtla kullanılabilir. [Codex modu ve yeni şirket kaydı](../README.md#codex-ile-sohbet-ederek-inceleme). Enron'un `2000-03-31` komutu, çıktı biçimleri ve kayıtları korunur. Python/PostgreSQL/Codex altyapısı ortaktır; kaynak ve tablo okuyucuları piyasaya göre ayrıdır. Yeni bir model eğitilmez. Güncel [v4 kaynaklı karşılaştırma, fon izi ve deney kullanımı](early-review-v4.md); [v3 gözlem/KERVN temeli](investor-checks.md). Aşağıdaki eski gerçek koşular tarihsel snapshot'lardır, yeni sürüm başarısı değildir.
 
 ## Çalıştırma
 

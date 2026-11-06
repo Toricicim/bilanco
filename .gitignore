@@ -14,6 +14,7 @@ htmlcov/
 data/assessments/
 data/evaluations/
 data/diagnostics/
+data/companies/
 data/equity-cache/
 data/replays/
 # New runtime data stays local; already tracked historical Enron snapshots remain tracked.

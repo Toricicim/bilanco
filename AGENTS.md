@@ -26,3 +26,7 @@ Read `CONTRIBUTING.md` and `README.md` before changing this repository. These ru
 ## Checks
 
 For code changes: `uv run ruff check .`, `uv run ruff format --check .`, and relevant `uv run pytest -q` tests. Broaden tests when shared behavior changes. PostgreSQL tests must use a separate database named `bilanco_test_*`, never the user's analysis database. Follow README for setup. For docs-only work, verify commands, paths, links and `git diff --check`; do not launch paid/live analysis merely to validate documentation.
+
+## Bilanco conversation workflow
+
+For a user asking to enter Bilanco mode or investigate a stock with this program, use `.agents/skills/bilanco/SKILL.md`. This is an analysis workflow, not authorization to change code. Coding requests continue to follow the repository Git/test instructions above. Native Codex CLI invocation is `$bilanco` or `/skills`; do not claim a custom `/bilanco` slash command was registered.
