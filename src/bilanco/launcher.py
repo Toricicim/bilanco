@@ -51,7 +51,9 @@ def prepare_review(settings, store, company, as_of):
         recommendation = {
             "choice": 1,
             "reason": (
-                "İlk incelemede 10 paketle başlayıp gerçek kapsam ve eksiklere göre genişletmek uygun."
+                f"Havuzda {options[0]['additional_packets']} paket kaldı; mevcut havuzun kalanını incelemek uygun."
+                if options[0]["additional_packets"] < 10
+                else "İlk incelemede 10 paketle başlayıp gerçek kapsam ve eksiklere göre genişletmek uygun."
                 if analysis is None
                 else "Önce 10 ek paketle devam edip yeni bulgu ve eksiklere göre bütçeyi artırmak uygun."
             ),
