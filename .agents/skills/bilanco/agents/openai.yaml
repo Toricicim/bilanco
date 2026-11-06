@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bilanco"
+  short_description: "Kaynaklı hisse incelemesi ve inceleme öncelikleri"
+  default_prompt: "$bilanco moduna geç; şirketi ve bilgi kesimini belirleyip kaynaklı inceleme yap."

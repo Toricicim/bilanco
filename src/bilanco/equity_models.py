@@ -34,7 +34,7 @@ class Company(Model):
     identity: str
     ticker: str
     kap_member: str | None = None
-    listed_at: date
+    listed_at: date | None = None
     identity_disclosure_id: int | None = Field(default=None, gt=0)
     catalog_lookback_days: int = Field(default=1096, ge=90, le=3653)
 

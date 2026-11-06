@@ -10,7 +10,7 @@ from pathlib import Path
 from .ai import AIError, Codex
 from .ai_routing import RoutedCodex
 from .equity_discovery import discover_sources
-from .equity_models import COMPANIES, EquityAnalysis, EquityAssessment, cutoff
+from .equity_models import EquityAnalysis, EquityAssessment, cutoff
 from .equity_review_trace import investor_review, review_trace
 from .equity_rules import DOMAINS, evaluate
 from .equity_signals import signal_checks
@@ -240,8 +240,10 @@ def run_equity(
                 for x in v.get("read_issues", [])
             ],
         )
-    company = COMPANIES[company_id]
-    if as_of < company.listed_at:
+    from .companies import get_company
+
+    company = get_company(settings, company_id)
+    if company.listed_at is not None and as_of < company.listed_at:
         raise ValueError("Bu şirket için halka arz öncesi hisse incelemesi desteklenmiyor.")
     if as_of > datetime.now(UTC).astimezone(cutoff(as_of).tzinfo).date():
         raise ValueError("Gelecek tarihli analiz yapılamaz.")
@@ -256,6 +258,12 @@ def run_equity(
         created_at=datetime.now(UTC),
         limitations=list(LIMITATIONS),
     )
+    if company.listed_at is None:
+        analysis.limitations.append(
+            "İlk işlem tarihi doğrulanmadı; halka arz öncesi tarih kontrolü uygulanamadı. "
+            "Geçmiş kod/unvan değişimleri otomatik birleştirilmez; sektör uyumluluğu doğrulanmadı."
+        )
+    analysis.ai["company_identity"] = company.model_dump(mode="json")
     ai = codex or (
         RoutedCodex(settings, directory / "ai", fallback_model)
         if fallback_model

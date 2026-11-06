@@ -2,7 +2,8 @@
 
 from datetime import datetime
 
-from .equity_models import COMPANIES, ISTANBUL
+from .companies import all_companies
+from .equity_models import ISTANBUL
 from .equity_text import PROMPT_VERSION
 from .terminal import print_equity_summary
 
@@ -17,11 +18,67 @@ def choice(prompt, allowed, *, read, write, default=None):
         write("Geçerli seçeneklerden birini yazın: " + ", ".join(allowed))
 
 
+def packet_options(previous=None):
+    base = previous.ai.get("packets_processed", 0) if previous else 0
+    planned = previous.ai.get("packets_planned", 0) if previous else 0
+    options = []
+    for i, amount in enumerate((10, 20, 40), 1):
+        effective = min(amount, max(0, planned - base)) if planned else amount
+        if effective:
+            options.append(
+                {
+                    "choice": i,
+                    "requested_packets": amount,
+                    "additional_packets": effective,
+                    "total_target": base + effective,
+                    "max_ai_calls": min(128, 2 * effective + (0 if previous else 2)),
+                }
+            )
+    return options
+
+
+def prepare_review(settings, store, company, as_of):
+    today = datetime.now(ISTANBUL).date()
+    if as_of > today or (company.listed_at is not None and as_of < company.listed_at):
+        raise ValueError("İnceleme tarihi gelecek veya bilinen ilk işlem tarihinden önce olamaz.")
+    previous = store.find_equity_run(company.id, as_of=as_of, prompt_version=PROMPT_VERSION)
+    analysis = previous[0] if previous else None
+    if analysis is not None and not analysis.ai.get("packets_planned"):
+        analysis = None  # An empty prior pool cannot make progress by adding packets.
+    options = packet_options(analysis)
+    recommendation = None
+    if options:
+        recommendation = {
+            "choice": 1,
+            "reason": (
+                f"Havuzda {options[0]['additional_packets']} paket kaldı; mevcut havuzun kalanını incelemek uygun."
+                if options[0]["additional_packets"] < 10
+                else "İlk incelemede 10 paketle başlayıp gerçek kapsam ve eksiklere göre genişletmek uygun."
+                if analysis is None
+                else "Önce 10 ek paketle devam edip yeni bulgu ve eksiklere göre bütçeyi artırmak uygun."
+            ),
+        }
+    return {
+        "company": company.model_dump(mode="json"),
+        "as_of": as_of.isoformat(),
+        "mode": "initial" if analysis is None else "resume" if options else "finished",
+        "resume_run": analysis.run_id if analysis is not None else None,
+        "packets_processed": analysis.ai.get("packets_processed", 0) if analysis else 0,
+        "packets_planned": analysis.ai.get("packets_planned") if analysis else None,
+        "result_directory": str(settings.data_dir / "runs" / analysis.run_id) if analysis else None,
+        "options": options,
+        "recommendation": recommendation,
+        "analysis_started": False,
+        "note": "Paket belge sayısı değildir. Seçim yapılmadan analiz başlatılmadı; süre/tüketim tahmini ölçülmüş değildir.",
+    }
+
+
 def choose_start(settings, store, *, read=input, write=print):
     write("\nBİLANCO — Türkiye hisse incelemesi")
-    companies = list(COMPANIES)
+    registry = all_companies(settings)
+    companies = list(registry)
     for i, key in enumerate(companies, 1):
-        write(f"  {i}) {COMPANIES[key].name} ({COMPANIES[key].ticker})")
+        write(f"  {i}) {registry[key].name} ({registry[key].ticker})")
     write("  0) Çıkış")
     picked = choice(
         "Şirket [1]: ",
@@ -42,7 +99,8 @@ def choose_start(settings, store, *, read=input, write=print):
             return None
         try:
             as_of = datetime.strptime(value, "%Y-%m-%d").date() if value else default_date
-            if not COMPANIES[company_id].listed_at <= as_of <= today:
+            listed = registry[company_id].listed_at
+            if as_of > today or (listed is not None and as_of < listed):
                 raise ValueError
             break
         except ValueError:
@@ -63,10 +121,11 @@ def choose_start(settings, store, *, read=input, write=print):
         write("Kaç paket daha ekleyelim? (Mevcut tarihli kaynaklardan devam edilir.)")
     else:
         write("Bu şirket/tarih için uyumlu yerel kayıt yok. Kaç paketle başlayalım?")
-    for i, amount in enumerate((10, 20, 40), 1):
-        effective = min(amount, max(0, planned - base)) if planned else amount
-        budget = min(128, 2 * effective + (0 if previous else 2))
-        write(f"  {i}) {amount} paket — en fazla {budget} AI çağrısı (tekrarlar dahil)")
+    for option in packet_options(previous[0] if previous else None):
+        write(
+            f"  {option['choice']}) {option['requested_packets']} paket — "
+            f"en fazla {option['max_ai_calls']} AI çağrısı (tekrarlar dahil)"
+        )
     write("  0) Çıkış")
     picked = choice("Paket seçimi [1]: ", ["0", "1", "2", "3"], read=read, write=write, default="1")
     if picked == "0":

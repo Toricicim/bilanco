@@ -2,6 +2,52 @@
 
 Terminalden çalışan, kaynak ve tarih kontrollü şirket inceleme hattı. Belgelerden alıntılı bulgular, finansal göstergeler ve yatırım öncesi inceleme işaretleri çıkarır. Dolandırıcılık hükmü veya al/sat emri üretmez. Kod `src/`, yerel çıktılar `data/`, paylaşılabilir sabit HTML örnekleri `demos/` klasöründedir. Program HTML üretmez ve arka planda sürekli tarama yapmaz.
 
+## Codex ile sohbet ederek inceleme
+
+Codex'te **`$bilanco`** yaz veya `/skills` menüsünden **Bilanco** seç. Örneğin:
+
+```text
+$bilanco
+$bilanco Özata'yı 2025-03-31 itibarıyla incele.
+$bilanco THYAO'yu incele.
+```
+
+Yalnız mod açmak belge/model analizi başlatmaz; hisseyi sorar. Hisse/tarih belli olunca10/20/40 paket seçeneklerini ve gerekçeli10 paket önerisini gösterip seçimini bekler. Önceki tarihli kayıt varsa ek paketler ve toplam hedef gösterilir. Kullanıcı baştan paket miktarını yazmışsa tekrar sorulmaz. Skill şirketi ve tarihi belirler, programı çalıştırır, kayıtlı JSON/alıntılar üzerinden konuşur. Sonraki sorular aynı çalışma üzerinden cevaplanır; “moddan çık” ile normal konuşmaya dönülür. Bu bir konuşma iş akışıdır, ayrı kalıcı sunucu modu değildir.
+
+**`/bilanco` özel slash komutu Codex CLI'a kaydedilmedi.** CLI'ın desteklediği skill çağrısı `$bilanco` ve `/skills`'tir. Yeni skill görünmüyorsa Codex'i yeniden aç.
+
+Skill repo içindeki `.agents/skills/bilanco/` klasöründe paylaşılır. Codex'i repo içinde açmak yeterlidir. Bu bilgisayarda farklı klasörlerden kullanım için kullanıcı skill dizinine repo skill'ine bir symlink kurulmuştur. Arkadaşların da isterse repo kökünde, hedefte aynı adla başka skill yokken:
+
+```sh
+mkdir -p ~/.agents/skills
+ln -s "$PWD/.agents/skills/bilanco" ~/.agents/skills/bilanco
+```
+
+Skill yardımcı programı gerçek repo konumunu takip eder; `.env` doğru klasörden okunur. Repo taşınırsa kullanıcı symlink'ini güncelle. Klasörü tek başına kopyalamak Python projesini kurmaz.
+
+### Yeni bir şirketi tanıtmak
+
+Yerleşik OZATD/HATSN/KERVN korunur. Yeni hisse için Codex veya kullanıcı **resmî KAP bildirim bağlantısını** bulur; program kod–unvan–KAP üye kimliğini metadata ve bildirimin kendi PDF'sinden doğrular. Ham AI şirket kimliği kabul edilmez. Şirket adına göre otomatik genel katalog araması henüz programın içinde yoktur; aramayı üst Codex sohbeti yapar. Belirsiz adlarda seçim veya bağlantı istenir.
+
+```sh
+./baslat company list
+./baslat company show --ticker THYAO
+# Kayıtlı şirket için analiz başlatmadan bütçe seçeneklerini göster:
+./baslat prepare --company ozatd --as-of 2025-03-31
+# Yalnız yeni şirket kaydı: ID yerine gerçek şirketin bildirim numarasını yaz.
+./baslat company add --ticker THYAO --kap-url https://www.kap.org.tr/tr/Bildirim/ID
+# Kayıt başarılı olduktan sonra mevcut motorla gerçek analiz:
+./baslat analyze --company thyao --as-of 2025-03-31 --max-packets 10 --max-ai-calls 22
+```
+
+`company list/show` ağ/AI/DB bağlantısı açmaz. `company add` iki resmî kaynağı edinip doğrular ve yerel `data/companies/` kaydını oluşturur; AI çağırmaz. Kimlik kanıtları hash ile `data/raw/` altında tutulur ve sonraki yerel okumada doğrulanır. Yeni kayıtlar ve ham kanıtlar Git'e eklenmez. Başka bilgisayar kendi kaydını oluşturur.
+
+Güncel kimlik belgesi geçmiş finansal kanıt değildir; yalnız yönlendirme için kullanılır. İlk işlem tarihi kaynaktan elde edilmediği için yeni şirkette bilinmiyor olarak kalır; halka arz öncesi tarih kontrolünün uygulanamadığı ve katalog penceresi çıktıda belirtilir. Eski unvan/kodlar otomatik birleştirilmez. Bir şirketin tanıtılması, banka/sigorta dahil bütün rapor yapılarının eksiksiz desteklendiği anlamına gelmez. Mevcut tarihli replay senaryoları yeni şirketlere otomatik aktarılmaz.
+
+Skill ilk tur için10 paket/22 iç AI çağrısı önerir ve kullanıcı seçimini bekler;20 ve 40 seçenekleri de vardır. `prepare` kayıt/bütçe önerisini JSON verir; finansal HTTP veya AI çağrısı yapmaz, yerel veritabanını okur. Devamda10/20/40ek paket için20/40/80 çağrı tavanı gösterilir; kalan havuza göre azalır. Bu öneri maliyet/kapsamı adım adım yönetme tercihidir, ölçülmüş optimum değildir. Doğrudan `analyze` varsayılanı30 olarak kalır. Üst sohbet/web araması `analysis.ai.calls` içinde sayılmaz; toplam tüketim olarak sunulmaz. Şirket kayıtlıysa kimlik araması tekrarlanmaz. Takip sorusu yeni analiz gerektirmez. Programın mevcut inceleme kuyruğu kalibre edilmiş bir önem sıralaması veya çöküş olasılığı değildir.
+
+Resmî kullanım ve keşif kuralları: [OpenAI — Build skills](https://learn.chatgpt.com/docs/build-skills) (6 Kasım2026 kontrolü).
+
 ## Hızlı başlatma
 
 İlk kez kullanıyorsan aşağıdaki [kurulumu](#kurulum) tamamla. Sonraki çalıştırmalarda repo klasöründe tek komut yeterli:

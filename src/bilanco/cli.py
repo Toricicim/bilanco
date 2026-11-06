@@ -14,12 +14,13 @@ import psycopg
 from . import __version__
 from .ai import AIError, Codex, validate_candidates
 from .assessment import run_assessment
+from .companies import CompanyError, all_companies, get_company, register_company
 from .config import AS_OF, Settings
 from .equity_models import COMPANIES
 from .equity_pipeline import run_equity
 from .equity_replay import STUDIES, run_replay, validate_study
 from .equity_study import evaluate_study
-from .launcher import choose_start
+from .launcher import choose_start, prepare_review
 from .models import Block, Extraction
 from .pipeline import run_analysis
 from .storage import Store, write_json
@@ -32,9 +33,14 @@ def parser() -> argparse.ArgumentParser:
     )
     result.add_argument("--version", action="version", version=__version__)
     sub = result.add_subparsers(dest="command", required=True)
+    prepare = sub.add_parser(
+        "prepare", help="Sohbet için kayıt ve10/20/40paket seçenekleri; analiz başlatmaz"
+    )
+    prepare.add_argument("--company", required=True, type=str.lower)
+    prepare.add_argument("--as-of", required=True, type=date.fromisoformat)
     sub.add_parser("start", help="Şirket/tarih ve10/20/40paket seçimiyle etkileşimli başlat")
     analyze = sub.add_parser("analyze", help="Gerçek kaynak toplama ve Codex analizi başlatır")
-    analyze.add_argument("--company", required=True, type=str.lower, choices=["enron", *COMPANIES])
+    analyze.add_argument("--company", required=True, type=str.lower)
     analyze.add_argument("--as-of", required=True, type=date.fromisoformat)
     analyze.add_argument("--bundle", type=Path, help="Doğrulamalı KAP PDF / piyasa CSV paketi")
     analyze.add_argument(
@@ -98,6 +104,16 @@ def parser() -> argparse.ArgumentParser:
     db = sub.add_parser("db", help="Veritabanı işlemleri")
     db.add_argument("action", choices=["init"])
     sub.add_parser("runs", help="Son çalışmaların durumunu göster")
+    companies = sub.add_parser("company", help="Doğrulanmış yerel şirket kimlikleri")
+    operations = companies.add_subparsers(dest="operation", required=True)
+    operations.add_parser("list", help="Yerleşik ve doğrulanmış şirketleri göster; ağ/AI yok")
+    show = operations.add_parser("show", help="Bir şirketi yerel kayıtta bul; ağ/AI yok")
+    show.add_argument("--ticker", required=True)
+    add = operations.add_parser(
+        "add", help="Resmî KAP bildiriminden şirketi doğrula/kaydet; AI yok"
+    )
+    add.add_argument("--ticker", required=True)
+    add.add_argument("--kap-url", required=True)
     study = sub.add_parser(
         "evaluate-study",
         help="Kayıtlı çıktılarda yakalama/yanlış alarm ölçer; HTTP, AI ve DB kullanmaz",
@@ -191,6 +207,19 @@ def main(argv: list[str] | None = None) -> int:
             return 2
     try:
         settings = Settings.load()
+        if args.command == "company":
+            if args.operation == "add":
+                payload = register_company(settings, args.ticker, args.kap_url).model_dump(
+                    mode="json"
+                )
+            elif args.operation == "show":
+                payload = get_company(settings, args.ticker).model_dump(mode="json")
+            else:
+                payload = [c.model_dump(mode="json") for c in all_companies(settings).values()]
+            print(json.dumps(payload, ensure_ascii=False, indent=2))
+            return 0
+        if args.command in {"analyze", "prepare"} and args.company != "enron":
+            args.company = get_company(settings, args.company).id
         if args.command == "doctor":
             return doctor(settings)
         if args.command == "check-ai":
@@ -251,6 +280,12 @@ def main(argv: list[str] | None = None) -> int:
                 return 2
         with Store(settings.database_url) as store:
             store.initialize()
+            if args.command == "prepare":
+                result = prepare_review(
+                    settings, store, get_company(settings, args.company), args.as_of
+                )
+                print(json.dumps(result, ensure_ascii=False, indent=2))
+                return 0
             if interactive:
                 try:
                     chosen = choose_start(
@@ -301,7 +336,7 @@ def main(argv: list[str] | None = None) -> int:
                     if result["status"] == "complete"
                     else 3
                 )
-            if args.command == "analyze" and args.company in COMPANIES:
+            if args.command == "analyze" and args.company != "enron":
                 settings = replace(
                     settings, codex_model=args.model or settings.codex_model or "gpt-6-luna"
                 )
@@ -460,6 +495,9 @@ def main(argv: list[str] | None = None) -> int:
                 if result.status == "complete" and assessment_incomplete
                 else {"complete": 0, "partial": 3, "failed": 1}[result.status]
             )
+    except CompanyError as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
     except psycopg.Error:
         print(
             "PostgreSQL bağlantısı/işlemi başarısız. DATABASE_URL ve veritabanını kontrol et; bağlantı bilgileri yazdırılmadı.",
